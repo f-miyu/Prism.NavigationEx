@@ -10,6 +10,13 @@ namespace Prism.NavigationEx
         public static readonly string ParameterKey = "parameter";
         public static readonly string TaskCompletionSourceKey = "taskCompletionSource";
 
+        protected INavigationService NavigationService { get; }
+
+        protected NavigationViewModel(INavigationService navigationService)
+        {
+            NavigationService = navigationService;
+        }
+
         public virtual void OnNavigatedFrom(NavigationParameters parameters)
         {
         }
@@ -29,6 +36,10 @@ namespace Prism.NavigationEx
 
     public abstract class NavigationViewModel<TParameer> : NavigationViewModel
     {
+        protected NavigationViewModel(INavigationService navigationService) : base(navigationService)
+        {
+        }
+
         public override void OnNavigatingTo(NavigationParameters parameters)
         {
             base.OnNavigatingTo(parameters);
@@ -47,6 +58,10 @@ namespace Prism.NavigationEx
     public abstract class NavigationViewModelResult<TResult> : NavigationViewModel
     {
         private TaskCompletionSource<INavigationResult<TResult>> _tcs;
+
+        protected NavigationViewModelResult(INavigationService navigationService) : base(navigationService)
+        {
+        }
 
         public override void OnNavigatingTo(NavigationParameters parameters)
         {
@@ -85,8 +100,12 @@ namespace Prism.NavigationEx
         }
     }
 
-    public abstract class ViewModelBase<TParameer, TResult> : NavigationViewModel<TResult>
+    public abstract class NavigationViewModel<TParameer, TResult> : NavigationViewModel<TResult>
     {
+        protected NavigationViewModel(INavigationService navigationService) : base(navigationService)
+        {
+        }
+
         public override void OnNavigatingTo(NavigationParameters parameters)
         {
             base.OnNavigatingTo(parameters);

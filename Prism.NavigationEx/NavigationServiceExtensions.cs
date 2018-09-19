@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Prism.Navigation;
 
@@ -12,7 +13,7 @@ namespace Prism.NavigationEx
 
             if (wrapInNavigationPage)
             {
-                name = "NavigationPage/" + name;
+                name = NavigationNameProvider.NavigationPageName + "/" + name;
             }
 
             if (noHistory)

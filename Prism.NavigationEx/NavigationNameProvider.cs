@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Xamarin.Forms;
 namespace Prism.NavigationEx
 {
     public static class NavigationNameProvider
     {
         private static readonly Dictionary<Type, string> _names = new Dictionary<Type, string>();
+
+        public static string NavigationPageName { get; set; } = nameof(NavigationPage);
 
         public static string GetName(Type viewModelType)
         {

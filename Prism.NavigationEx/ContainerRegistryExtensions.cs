@@ -10,7 +10,7 @@ namespace Prism.NavigationEx
 {
     public static class ContainerRegistryExtensions
     {
-        public static void RegisterForNavigation<TView, TViewModel>(this IContainerRegistry containerRegistry, string name = null)
+        public static void RegisterForNavigationWithNavigationViewModel<TView, TViewModel>(this IContainerRegistry containerRegistry, string name = null)
             where TView : Page
             where TViewModel : NavigationViewModel
         {
@@ -20,7 +20,7 @@ namespace Prism.NavigationEx
             containerRegistry.RegisterForNavigationWithViewModelType(viewType, viewModelType, name);
         }
 
-        public static void RegisterForNavigationWithViewModelType(this IContainerRegistry containerRegistry, Type viewType, Type viewModelType, string name)
+        private static void RegisterForNavigationWithViewModelType(this IContainerRegistry containerRegistry, Type viewType, Type viewModelType, string name)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -34,7 +34,7 @@ namespace Prism.NavigationEx
             containerRegistry.RegisterForNavigation(viewType, name);
         }
 
-        public static void RegisterForNavigationOnPlatform<TView, TViewModel>(this IContainerRegistry containerRegistry, string name, params IPlatform[] platforms)
+        public static void RegisterForNavigationOnPlatformWithNavigationViewModel<TView, TViewModel>(this IContainerRegistry containerRegistry, string name, params IPlatform[] platforms)
             where TView : Page
             where TViewModel : NavigationViewModel
         {
@@ -57,7 +57,7 @@ namespace Prism.NavigationEx
             containerRegistry.RegisterForNavigation<TView, TViewModel>(name);
         }
 
-        public static void RegisterForNavigationOnIdiom<TView, TViewModel>(this IContainerRegistry containerRegistry, string name = null, Type desktopView = null, Type tabletView = null, Type phoneView = null)
+        public static void RegisterForNavigationOnIdiomWithNavigationViewModel<TView, TViewModel>(this IContainerRegistry containerRegistry, string name = null, Type desktopView = null, Type tabletView = null, Type phoneView = null)
             where TView : Page
             where TViewModel : NavigationViewModel
         {
@@ -87,6 +87,20 @@ namespace Prism.NavigationEx
             }
         }
 
+        public static void RegisterForNavigationWithNavigationPage<TView>(this IContainerRegistry containerRegistry, string name = null) where TView : NavigationPage
+        {
+            var viewType = typeof(TView);
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                name = viewType.Name;
+            }
+
+            NavigationNameProvider.NavigationPageName = name;
+
+            containerRegistry.RegisterForNavigation(viewType, name);
+        }
+
         public static void RegisterForNavigations(this IContainerRegistry containerRegistry, Assembly assembly, IDictionary<Type, string> names = null, IDictionary<Type, Type> viewModelTypes = null)
         {
             var types = assembly.GetTypes();
@@ -94,7 +108,7 @@ namespace Prism.NavigationEx
             if (types == null)
                 return;
 
-            var viewTypes = types.Where(t => t.IsSubclassOf(typeof(Page)));
+            var viewTypes = types.Where(t => !t.IsAbstract && t.IsSubclassOf(typeof(Page)));
 
             foreach (var viewType in viewTypes)
             {
@@ -107,7 +121,6 @@ namespace Prism.NavigationEx
                 if (viewModelTypes != null && viewModelTypes.ContainsKey(viewType))
                 {
                     var viewModelType = viewModelTypes[viewType];
-
                     containerRegistry.RegisterForNavigationWithViewModelType(viewType, viewModelType, name);
                 }
                 else
@@ -115,6 +128,12 @@ namespace Prism.NavigationEx
                     containerRegistry.RegisterForNavigation(viewType, name);
                 }
             }
+        }
+
+        public static void RegisterForNavigations(this IContainerRegistry containerRegistry, Application application, IDictionary<Type, string> names = null, IDictionary<Type, Type> viewModelTypes = null)
+        {
+            var assembly = application.GetType().Assembly;
+            containerRegistry.RegisterForNavigations(assembly, names, viewModelTypes);
         }
     }
 }
