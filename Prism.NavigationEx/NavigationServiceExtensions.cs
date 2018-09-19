@@ -8,7 +8,7 @@ namespace Prism.NavigationEx
     {
         public static Task NavigateAsync<TViewModel>(this INavigationService navigationService, NavigationParameters parameters = null, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false) where TViewModel : NavigationViewModel
         {
-            var name = PageNameProvider.GetPageName(typeof(TViewModel));
+            var name = NavigationNameProvider.GetName(typeof(TViewModel));
 
             if (wrapInNavigationPage)
             {
