@@ -9,6 +9,7 @@ namespace Prism.NavigationEx
     {
         public static readonly string ParameterKey = "parameter";
         public static readonly string TaskCompletionSourceKey = "taskCompletionSource";
+        public static readonly string ParameterIdKey = "parameterId";
 
         protected INavigationService NavigationService { get; }
 
@@ -17,15 +18,15 @@ namespace Prism.NavigationEx
             NavigationService = navigationService;
         }
 
-        public virtual void OnNavigatedFrom(NavigationParameters parameters)
+        public virtual void OnNavigatedFrom(INavigationParameters parameters)
         {
         }
 
-        public virtual void OnNavigatedTo(NavigationParameters parameters)
+        public virtual void OnNavigatedTo(INavigationParameters parameters)
         {
         }
 
-        public virtual void OnNavigatingTo(NavigationParameters parameters)
+        public virtual void OnNavigatingTo(INavigationParameters parameters)
         {
         }
 
@@ -40,15 +41,23 @@ namespace Prism.NavigationEx
         {
         }
 
-        public override void OnNavigatingTo(NavigationParameters parameters)
+        public override void OnNavigatingTo(INavigationParameters parameters)
         {
             base.OnNavigatingTo(parameters);
 
-            if (parameters.GetNavigationMode() == NavigationMode.New && parameters.ContainsKey(ParameterKey))
+            if (parameters.GetNavigationMode() == NavigationMode.New)
             {
-                var parameter = (TParameer)parameters[ParameterKey];
-
-                Prepare(parameter);
+                if (parameters.TryGetValue<string>(ParameterIdKey, out var id))
+                {
+                    if (parameters.TryGetValue<TParameer>(id, out var parameter))
+                    {
+                        Prepare(parameter);
+                    }
+                }
+                else if (parameters.TryGetValue<TParameer>(ParameterKey, out var parameter))
+                {
+                    Prepare(parameter);
+                }
             }
         }
 
@@ -59,11 +68,13 @@ namespace Prism.NavigationEx
     {
         private TaskCompletionSource<INavigationResult<TResult>> _tcs;
 
+        public string ResultParameterKey { get; } = Guid.NewGuid().ToString();
+
         protected NavigationViewModelResult(INavigationService navigationService) : base(navigationService)
         {
         }
 
-        public override void OnNavigatingTo(NavigationParameters parameters)
+        public override void OnNavigatingTo(INavigationParameters parameters)
         {
             base.OnNavigatingTo(parameters);
 
@@ -73,18 +84,16 @@ namespace Prism.NavigationEx
             }
         }
 
-        public override void OnNavigatedFrom(NavigationParameters parameters)
+        public override void OnNavigatedFrom(INavigationParameters parameters)
         {
             base.OnNavigatedFrom(parameters);
 
             if (_tcs == null || parameters.GetNavigationMode() == NavigationMode.New)
                 return;
 
-            if (parameters.ContainsKey(ParameterKey))
+            if (parameters.TryGetValue<TResult>(ResultParameterKey, out var result))
             {
-                var parameter = (TResult)parameters[ParameterKey];
-
-                _tcs.TrySetResult(new NavigationResult<TResult>(true, parameter));
+                _tcs.TrySetResult(new NavigationResult<TResult>(true, result));
             }
             else
             {
@@ -100,21 +109,29 @@ namespace Prism.NavigationEx
         }
     }
 
-    public abstract class NavigationViewModel<TParameer, TResult> : NavigationViewModel<TResult>
+    public abstract class NavigationViewModel<TParameer, TResult> : NavigationViewModelResult<TResult>
     {
         protected NavigationViewModel(INavigationService navigationService) : base(navigationService)
         {
         }
 
-        public override void OnNavigatingTo(NavigationParameters parameters)
+        public override void OnNavigatingTo(INavigationParameters parameters)
         {
             base.OnNavigatingTo(parameters);
 
-            if (parameters.GetNavigationMode() == NavigationMode.New && parameters.ContainsKey(ParameterKey))
+            if (parameters.GetNavigationMode() == NavigationMode.New)
             {
-                var parameter = (TParameer)parameters[ParameterKey];
-
-                Prepare(parameter);
+                if (parameters.TryGetValue<string>(ParameterIdKey, out var id))
+                {
+                    if (parameters.TryGetValue<TParameer>(id, out var parameter))
+                    {
+                        Prepare(parameter);
+                    }
+                }
+                else if (parameters.TryGetValue<TParameer>(ParameterKey, out var parameter))
+                {
+                    Prepare(parameter);
+                }
             }
         }
 

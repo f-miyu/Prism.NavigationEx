@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              x:Class="Prism.NavigationEx.Sample.Views.MainPage" 
              Title="Main Page">
-    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-        <Label Text="Welcome to Xamarin Forms and Prism!" />
+    <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" Padding="8">
+        <Entry Text="{Binding Text.Value}"/>
+        <Button Text="Second Page" Command="{Binding ShowSecondPpageCommand}" HorizontalOptions="Center"/>
     </StackLayout>
 </ContentPage>

@@ -11,6 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prism.NavigationEx.Sample.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prism.NavigationEx.Sample.iOS", "Prism.NavigationEx.Sample\Prism.NavigationEx.Sample.iOS\Prism.NavigationEx.Sample.iOS.csproj", "{2A0B6C8C-323E-4599-9CF5-31D4BD922749}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prism.NavigationEx.NETStandard10", "Prism.NavigationEx.NETStandard10\Prism.NavigationEx.NETStandard10.csproj", "{A360D092-B3B3-4452-88AD-ACE75074C6AA}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Prism.NavigationEx.Shared", "Prism.NavigationEx.Shared\Prism.NavigationEx.Shared.shproj", "{D1691B8A-248D-40CE-BEB3-4F269CC7008A}"
+EndProject
+Project("{5DD5E4FA-CB73-4610-85AB-557B54E96AA9}") = "Prism.NavigationEx.NuGet", "Prism.NavigationEx.NuGet\Prism.NavigationEx.NuGet.nuproj", "{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +93,38 @@ Global
 		{2A0B6C8C-323E-4599-9CF5-31D4BD922749}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
 		{2A0B6C8C-323E-4599-9CF5-31D4BD922749}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
 		{2A0B6C8C-323E-4599-9CF5-31D4BD922749}.AppStore|iPhone.Build.0 = AppStore|iPhone
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.Release|iPhone.Build.0 = Release|Any CPU
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.Ad-Hoc|iPhone.ActiveCfg = Debug|Any CPU
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.Ad-Hoc|iPhone.Build.0 = Debug|Any CPU
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.AppStore|iPhone.ActiveCfg = Debug|Any CPU
+		{A360D092-B3B3-4452-88AD-ACE75074C6AA}.AppStore|iPhone.Build.0 = Debug|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.Release|iPhone.Build.0 = Release|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.Ad-Hoc|iPhone.ActiveCfg = Debug|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.Ad-Hoc|iPhone.Build.0 = Debug|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.AppStore|iPhone.ActiveCfg = Debug|Any CPU
+		{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}.AppStore|iPhone.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7EA069A1-5647-427B-AC26-68A2ACF47EDF} = {4B2F7743-6B8F-4BE1-9E43-D85E6637C9B0}

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2BC87EA2-5674-4F25-BD2A-3CF0CC93EDA8}</ProjectGuid>
+    <Description>Prism.NavigationEx.NuGet</Description>
+    <PackageId>Prism.NavigationEx.NuGet</PackageId>
+    <PackageVersion>1.0.0-pre</PackageVersion>
+    <Authors>f-miyu</Authors>
+    <DevelopmentDependency>false</DevelopmentDependency>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Prism.NavigationEx</RootNamespace>
+    <UsePartialTypes>false</UsePartialTypes>
+    <AssemblyName>Prism.NavigationEx.NuGet</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <OutputPath>bin\Debug</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="NuGet.Build.Packaging">
+      <Version>0.2.2</Version>
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Prism.NavigationEx.NETStandard10\Prism.NavigationEx.NETStandard10.csproj">
+      <Project>{A360D092-B3B3-4452-88AD-ACE75074C6AA}</Project>
+      <Name>Prism.NavigationEx.NETStandard10</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Prism.NavigationEx\Prism.NavigationEx.csproj">
+      <Project>{CF6A9F74-4E13-4093-AA6A-BBE10FC9A698}</Project>
+      <Name>Prism.NavigationEx</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.Common.targets" />
+  <Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets')" />
+</Project>

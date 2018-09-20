@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="Prism.NavigationEx.Sample.Views.SecondPage"
+             Title="Sccond Page">
+    <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" Padding="8">
+        <Entry Text="{Binding Text.Value}"/>
+        <Button Text="OK" Command="{Binding OkCommand}" HorizontalOptions="Center" />
+        <Button Text="Cancel" Command="{Binding CancelCommand}" HorizontalOptions="Center"/>
+        <Button Text="Second Page" Command="{Binding ShowThirdPageCommand}" HorizontalOptions="Center"/>
+    </StackLayout>
+</ContentPage>
