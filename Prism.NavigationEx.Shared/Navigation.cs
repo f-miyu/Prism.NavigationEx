@@ -1,7 +1,7 @@
 ﻿using System;
 namespace Prism.NavigationEx
 {
-    public class Navigation<TViewModel> : INavigation where TViewModel : NavigationViewModel
+    public class Navigation<TViewModel> : INavigation where TViewModel : INavigationViewModel
     {
         public Type ViewModelType => typeof(TViewModel);
 
@@ -20,7 +20,7 @@ namespace Prism.NavigationEx
         public virtual Type ResultType => null;
     }
 
-    public class Navigation<TViewModel, TParameter> : Navigation<TViewModel> where TViewModel : NavigationViewModel<TParameter>
+    public class Navigation<TViewModel, TParameter> : Navigation<TViewModel> where TViewModel : INavigationViewModel<TParameter>
     {
         private TParameter _parameter;
         public new TParameter Parameter
@@ -34,12 +34,12 @@ namespace Prism.NavigationEx
         }
     }
 
-    public class NavigationResult<TViewModel, TResult> : Navigation<TViewModel> where TViewModel : NavigationViewModelResult<TResult>
+    public class NavigationResult<TViewModel, TResult> : Navigation<TViewModel> where TViewModel : INavigationViewModelResult<TResult>
     {
         public override Type ResultType => typeof(TResult);
     }
 
-    public class Navigation<TViewModel, TParameter, TResult> : NavigationResult<TViewModel, TResult> where TViewModel : NavigationViewModel<TParameter, TResult>
+    public class Navigation<TViewModel, TParameter, TResult> : NavigationResult<TViewModel, TResult> where TViewModel : INavigationViewModel<TParameter, TResult>
     {
         private TParameter _parameter;
         public new TParameter Parameter

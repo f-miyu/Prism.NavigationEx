@@ -5,12 +5,8 @@ using Prism.Navigation;
 
 namespace Prism.NavigationEx
 {
-    public abstract class NavigationViewModel : BindableBase, INavigationAware, IDestructible
+    public abstract class NavigationViewModel : BindableBase, INavigationViewModel, INavigationAware, IDestructible
     {
-        public static readonly string ParameterKey = "parameter";
-        public static readonly string TaskCompletionSourceKey = "taskCompletionSource";
-        public static readonly string ParameterIdKey = "parameterId";
-
         protected INavigationService NavigationService { get; }
 
         protected NavigationViewModel(INavigationService navigationService)
@@ -35,7 +31,7 @@ namespace Prism.NavigationEx
         }
     }
 
-    public abstract class NavigationViewModel<TParameer> : NavigationViewModel
+    public abstract class NavigationViewModel<TParameter> : NavigationViewModel, INavigationViewModel<TParameter>
     {
         protected NavigationViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -45,26 +41,13 @@ namespace Prism.NavigationEx
         {
             base.OnNavigatingTo(parameters);
 
-            if (parameters.GetNavigationMode() == NavigationMode.New)
-            {
-                if (parameters.TryGetValue<string>(ParameterIdKey, out var id))
-                {
-                    if (parameters.TryGetValue<TParameer>(id, out var parameter))
-                    {
-                        Prepare(parameter);
-                    }
-                }
-                else if (parameters.TryGetValue<TParameer>(ParameterKey, out var parameter))
-                {
-                    Prepare(parameter);
-                }
-            }
+            this.PrepareIfNeeded<TParameter>(parameters);
         }
 
-        public abstract void Prepare(TParameer parameer);
+        public abstract void Prepare(TParameter parameter);
     }
 
-    public abstract class NavigationViewModelResult<TResult> : NavigationViewModel
+    public abstract class NavigationViewModelResult<TResult> : NavigationViewModel, INavigationViewModelResult<TResult>
     {
         private TaskCompletionSource<INavigationResult<TResult>> _tcs;
 
@@ -78,9 +61,9 @@ namespace Prism.NavigationEx
         {
             base.OnNavigatingTo(parameters);
 
-            if (parameters.GetNavigationMode() == NavigationMode.New && parameters.ContainsKey(TaskCompletionSourceKey))
+            if (parameters.GetNavigationMode() == NavigationMode.New)
             {
-                _tcs = (TaskCompletionSource<INavigationResult<TResult>>)parameters[TaskCompletionSourceKey];
+                parameters.TryGetValue<TaskCompletionSource<INavigationResult<TResult>>>(NavigationParameterKey.TaskCompletionSource, out _tcs);
             }
         }
 
@@ -109,7 +92,7 @@ namespace Prism.NavigationEx
         }
     }
 
-    public abstract class NavigationViewModel<TParameer, TResult> : NavigationViewModelResult<TResult>
+    public abstract class NavigationViewModel<TParameter, TResult> : NavigationViewModelResult<TResult>, INavigationViewModel<TParameter, TResult>
     {
         protected NavigationViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -119,22 +102,9 @@ namespace Prism.NavigationEx
         {
             base.OnNavigatingTo(parameters);
 
-            if (parameters.GetNavigationMode() == NavigationMode.New)
-            {
-                if (parameters.TryGetValue<string>(ParameterIdKey, out var id))
-                {
-                    if (parameters.TryGetValue<TParameer>(id, out var parameter))
-                    {
-                        Prepare(parameter);
-                    }
-                }
-                else if (parameters.TryGetValue<TParameer>(ParameterKey, out var parameter))
-                {
-                    Prepare(parameter);
-                }
-            }
+            this.PrepareIfNeeded<TParameter>(parameters);
         }
 
-        public abstract void Prepare(TParameer parameer);
+        public abstract void Prepare(TParameter parameter);
     }
 }

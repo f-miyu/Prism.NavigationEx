@@ -17,5 +17,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)NavigationViewModel.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
     <Compile Include="$(MSBuildThisFileDirectory)Navigation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)INavigation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)INavigationViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavigationViewModelExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavigationParameterKey.cs" />
   </ItemGroup>
 </Project>

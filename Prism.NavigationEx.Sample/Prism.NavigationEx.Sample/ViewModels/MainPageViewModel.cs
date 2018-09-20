@@ -29,7 +29,8 @@ namespace Prism.NavigationEx.Sample.ViewModels
                 //    Text.Value = result.Data;
                 //}
 
-                var result = await NavigationService.NavigateAsync<SecondPageViewModel, string, string>(Text.Value, false, true, false, false, new Navigation<ThirdPageViewModel, int, int> { Parameter = 5 }, new Navigation<SecondPageViewModel, string, string> { Parameter = "vvv" });
+
+                var result = await NavigationService.NavigateAsync<SecondPageViewModel, string>(false, true, false, false, new Navigation<ThirdPageViewModel, int, int> { Parameter = 5 }, new Navigation<SecondPageViewModel, string, string> { Parameter = "vvv" });
             });
         }
 

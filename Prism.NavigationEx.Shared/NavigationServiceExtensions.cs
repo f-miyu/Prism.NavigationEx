@@ -8,50 +8,51 @@ namespace Prism.NavigationEx
     public static class NavigationServiceExtensions
     {
         public static Task<INavigationResult> NavigateAsync<TViewModel>(this INavigationService navigationService, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
-            where TViewModel : NavigationViewModel
+            where TViewModel : INavigationViewModel
         {
             return navigationService.NavigateAsync<TViewModel>(null, useModalNavigation, animated, wrapInNavigationPage, noHistory);
         }
 
         public static Task<INavigationResult> NavigateAsync<TViewModel, TParameter>(this INavigationService navigationService, TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
-            where TViewModel : NavigationViewModel<TParameter>
+            where TViewModel : INavigationViewModel<TParameter>
         {
             var parameters = new NavigationParameters
             {
-                {NavigationViewModel.ParameterKey,  parameter}
+                {NavigationParameterKey.Parameter,  parameter}
             };
 
             return navigationService.NavigateAsync<TViewModel>(parameters, useModalNavigation, animated, wrapInNavigationPage, noHistory);
         }
 
         public static Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TResult>(this INavigationService navigationService, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, CancellationToken? cancellationToken = null)
-            where TViewModel : NavigationViewModelResult<TResult>
+            where TViewModel : INavigationViewModelResult<TResult>
         {
             var tcs = new TaskCompletionSource<INavigationResult<TResult>>();
 
             var parameters = new NavigationParameters
             {
-                {NavigationViewModel.TaskCompletionSourceKey, tcs}
+                {NavigationParameterKey.TaskCompletionSource, tcs}
             };
 
             return navigationService.NavigateAsync<TViewModel, TResult>(parameters, tcs, useModalNavigation, animated, wrapInNavigationPage, noHistory, cancellationToken);
         }
 
         public static Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TParameter, TResult>(this INavigationService navigationService, TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, CancellationToken? cancellationToken = null)
-            where TViewModel : NavigationViewModel<TParameter, TResult>
+            where TViewModel : INavigationViewModel<TParameter, TResult>
         {
             var tcs = new TaskCompletionSource<INavigationResult<TResult>>();
 
             var parameters = new NavigationParameters
             {
-                {NavigationViewModel.ParameterKey,  parameter},
-                {NavigationViewModel.TaskCompletionSourceKey, tcs}
+                {NavigationParameterKey.Parameter,  parameter},
+                {NavigationParameterKey.TaskCompletionSource, tcs}
             };
 
             return navigationService.NavigateAsync<TViewModel, TResult>(parameters, tcs, useModalNavigation, animated, wrapInNavigationPage, noHistory, cancellationToken);
         }
 
-        private static Task<INavigationResult> NavigateAsync<TViewModel>(this INavigationService navigationService, NavigationParameters parameters = null, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false) where TViewModel : NavigationViewModel
+        private static Task<INavigationResult> NavigateAsync<TViewModel>(this INavigationService navigationService, NavigationParameters parameters = null, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
+            where TViewModel : INavigationViewModel
         {
             var viewModelType = typeof(TViewModel);
             var name = NavigationNameProvider.GetNavigationName(viewModelType);
@@ -70,7 +71,7 @@ namespace Prism.NavigationEx
         }
 
         private async static Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TResult>(this INavigationService navigationService, NavigationParameters parameters, TaskCompletionSource<INavigationResult<TResult>> tcs, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, CancellationToken? cancellationToken = null)
-            where TViewModel : NavigationViewModelResult<TResult>
+            where TViewModel : INavigationViewModelResult<TResult>
         {
             using (cancellationToken?.Register(() => tcs.TrySetCanceled()))
             {
@@ -93,28 +94,28 @@ namespace Prism.NavigationEx
         }
 
         public static Task<INavigationResult> NavigateAsync<TViewModel>(this INavigationService navigationService, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
-            where TViewModel : NavigationViewModel
+            where TViewModel : INavigationViewModel
         {
             var firstNavigation = new Navigation<TViewModel>();
             return navigationService.NavigateAsync(firstNavigation, useModalNavigation, animated, wrapInNavigationPage, noHistory, navigations);
         }
 
         public static Task<INavigationResult> NavigateAsync<TViewModel, TParameter>(this INavigationService navigationService, TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
-            where TViewModel : NavigationViewModel<TParameter>
+            where TViewModel : INavigationViewModel<TParameter>
         {
             var firstNavigation = new Navigation<TViewModel, TParameter> { Parameter = parameter };
             return navigationService.NavigateAsync(firstNavigation, useModalNavigation, animated, wrapInNavigationPage, noHistory, navigations);
         }
 
         public static Task<INavigationResult> NavigateAsync<TViewModel, TResult>(this INavigationService navigationService, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
-            where TViewModel : NavigationViewModelResult<TResult>
+            where TViewModel : INavigationViewModelResult<TResult>
         {
             var firstNavigation = new NavigationResult<TViewModel, TResult>();
             return navigationService.NavigateAsync(firstNavigation, useModalNavigation, animated, wrapInNavigationPage, noHistory, navigations);
         }
 
         public static Task<INavigationResult> NavigateAsync<TViewModel, TParameter, TResult>(this INavigationService navigationService, TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
-            where TViewModel : NavigationViewModel<TParameter, TResult>
+            where TViewModel : INavigationViewModel<TParameter, TResult>
         {
             var firstNavigation = new Navigation<TViewModel, TParameter, TResult> { Parameter = parameter };
             return navigationService.NavigateAsync(firstNavigation, useModalNavigation, animated, wrapInNavigationPage, noHistory, navigations);
@@ -128,7 +129,7 @@ namespace Prism.NavigationEx
             if (firstNavigation.ParameterExists)
             {
                 var id = Guid.NewGuid().ToString();
-                path += $"?{NavigationViewModel.ParameterIdKey}={id}";
+                path += $"?{NavigationParameterKey.ParameterId}={id}";
                 parameters.Add(id, firstNavigation.Parameter);
             }
 
@@ -140,7 +141,7 @@ namespace Prism.NavigationEx
                     if (navigation.ParameterExists)
                     {
                         var id = Guid.NewGuid().ToString();
-                        path += $"?{NavigationViewModel.ParameterIdKey}={id}";
+                        path += $"?{NavigationParameterKey.ParameterId}={id}";
                         parameters.Add(id, navigation.Parameter);
                     }
                 }
@@ -160,7 +161,7 @@ namespace Prism.NavigationEx
         }
 
         public static Task<INavigationResult> GoBackAsync<TViewModel, TResult>(this INavigationService navigationService, TViewModel viewModel, TResult result, bool? useModalNavigation = null, bool animated = true)
-            where TViewModel : NavigationViewModelResult<TResult>
+            where TViewModel : INavigationViewModelResult<TResult>
         {
             var parameters = new NavigationParameters
             {
@@ -171,7 +172,7 @@ namespace Prism.NavigationEx
         }
 
         public static Task<INavigationResult> GoBackToRootAsync<TViewModel, TResult>(this INavigationService navigationService, TViewModel viewModel, TResult result)
-            where TViewModel : NavigationViewModelResult<TResult>
+            where TViewModel : INavigationViewModelResult<TResult>
         {
             var parameters = new NavigationParameters
             {
