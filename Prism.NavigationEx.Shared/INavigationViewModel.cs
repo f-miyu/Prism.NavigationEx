@@ -12,7 +12,6 @@ namespace Prism.NavigationEx
 
     public interface INavigationViewModelResult<TResult> : INavigationViewModel
     {
-        string ResultParameterKey { get; }
     }
 
     public interface INavigationViewModel<TParameter, TResult> : INavigationViewModel<TParameter>, INavigationViewModelResult<TResult>

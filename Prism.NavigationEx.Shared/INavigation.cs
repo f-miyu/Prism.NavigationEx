@@ -6,6 +6,5 @@ namespace Prism.NavigationEx
         Type ViewModelType { get; }
         object Parameter { get; }
         bool ParameterExists { get; }
-        Type ResultType { get; }
     }
 }

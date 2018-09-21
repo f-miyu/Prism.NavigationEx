@@ -12,8 +12,8 @@ namespace Prism.NavigationEx.Sample.ViewModels
 
         public ThirdPageViewModel(INavigationService navigationService) : base(navigationService)
         {
-            OkCommand.Subscribe(() => NavigationService.GoBackAsync(this, 100));
-            CancelCommand.Subscribe(() => NavigationService.GoBackToRootAsync());
+            OkCommand.Subscribe(() => GoBackToRootAsync(100));
+            CancelCommand.Subscribe(() => GoBackToRootAsync());
         }
 
         public override void Prepare(int parameer)

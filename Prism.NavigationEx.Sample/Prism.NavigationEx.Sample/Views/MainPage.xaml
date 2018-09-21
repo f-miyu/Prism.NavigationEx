@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              x:Class="Prism.NavigationEx.Sample.Views.MainPage" 
              Title="Main Page">
-    <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" Padding="8">
-        <Entry Text="{Binding Text.Value}"/>
-        <Button Text="Second Page" Command="{Binding ShowSecondPpageCommand}" HorizontalOptions="Center"/>
+    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Padding="8">
+        <Label Text="{Binding Text.Value}" HorizontalOptions="Center"/>
+        <Button Text="Go to Second Page" Command="{Binding GoToSecondPpageCommand}" HorizontalOptions="Center"/>
     </StackLayout>
 </ContentPage>

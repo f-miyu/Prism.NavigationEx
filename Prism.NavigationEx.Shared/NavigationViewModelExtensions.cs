@@ -9,16 +9,16 @@ namespace Prism.NavigationEx
         {
             if (parameters.GetNavigationMode() == NavigationMode.New)
             {
-                if (parameters.TryGetValue<string>(NavigationParameterKey.ParameterId, out var id))
+                if (parameters.TryGetValue<TParameter>(NavigationParameterKey.Parameter, out var parameter))
                 {
-                    if (parameters.TryGetValue<TParameter>(id, out var parameter))
+                    self.Prepare(parameter);
+                }
+                else if (parameters.TryGetValue<string>(NavigationParameterKey.ParameterId, out var id))
+                {
+                    if (parameters.TryGetValue<TParameter>(id, out parameter))
                     {
                         self.Prepare(parameter);
                     }
-                }
-                else if (parameters.TryGetValue<TParameter>(NavigationParameterKey.Parameter, out var parameter))
-                {
-                    self.Prepare(parameter);
                 }
             }
         }

@@ -4,7 +4,7 @@ using Reactive.Bindings;
 
 namespace Prism.NavigationEx.Sample.ViewModels
 {
-    public class SecondPageViewModel : NavigationViewModel<string, string>
+    public class SecondPageViewModel : NavigationViewModelResult<string>
     {
         public ReactivePropertySlim<string> Text { get; } = new ReactivePropertySlim<string>();
         public ReactiveCommand OkCommand { get; } = new ReactiveCommand();
@@ -13,22 +13,17 @@ namespace Prism.NavigationEx.Sample.ViewModels
 
         public SecondPageViewModel(INavigationService navigationService) : base(navigationService)
         {
-            OkCommand.Subscribe(() => NavigationService.GoBackAsync(this, Text.Value));
-            CancelCommand.Subscribe(() => NavigationService.GoBackAsync());
+            OkCommand.Subscribe(() => GoBackAsync());
+            CancelCommand.Subscribe(() => GoBackAsync());
 
             ShowThirdPageCommand.Subscribe(async () =>
             {
-                var result = await navigationService.NavigateAsync<ThirdPageViewModel, int, int>(10);
+                var result = await NavigateAsync<ThirdPageViewModel, int, int>(10);
                 if (result.Success)
                 {
                     Text.Value = result.Data.ToString();
                 }
             });
-        }
-
-        public override void Prepare(string parameer)
-        {
-            Text.Value = parameer;
         }
     }
 }
