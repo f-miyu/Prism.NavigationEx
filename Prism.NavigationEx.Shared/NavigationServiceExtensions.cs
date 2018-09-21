@@ -190,18 +190,13 @@ namespace Prism.NavigationEx
             var cts = new CancellationTokenSource();
             parameters.Add(NavigationParameterKey.CancellationTokenSource, cts);
 
-            if (confirmParameter != null)
-            {
-                parameters.Add(NavigationParameterKey.ConfirmParameter, confirmParameter);
-            }
-
             var cancellationToken = cts.Token;
 
             using (cancellationToken.Register(() => tcs.TrySetCanceled()))
             {
                 try
                 {
-                    var result = await navigationService.NavigateWihTypeAsync(viewModelType, parameters, useModalNavigation, animated, wrapInNavigationPage, noHistory).ConfigureAwait(false);
+                    var result = await navigationService.NavigateWihTypeAsync(viewModelType, parameters, confirmParameter, useModalNavigation, animated, wrapInNavigationPage, noHistory).ConfigureAwait(false);
 
                     if (!result.Success)
                     {
