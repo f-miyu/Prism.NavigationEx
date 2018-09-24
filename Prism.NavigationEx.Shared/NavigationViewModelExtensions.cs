@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Prism.Navigation;
 
 namespace Prism.NavigationEx
 {
-    internal static class NavigationViewModelExtensions
+    public static class NavigationViewModelExtensions
     {
-        public static void PrepareIfNeeded<TParameter>(this INavigationViewModel<TParameter> self, INavigationParameters parameters)
+        internal static void PrepareIfNeeded<TParameter>(this INavigationViewModel<TParameter> self, INavigationParameters parameters)
         {
             if (parameters.GetNavigationMode() == NavigationMode.New)
             {
@@ -21,6 +22,74 @@ namespace Prism.NavigationEx
                     }
                 }
             }
+        }
+
+        public static Task<INavigationResult> NavigateAsync<TViewModel>(this INavigationViewModel self, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
+            where TViewModel : INavigationViewModel
+        {
+            return self.NavigationService.NavigateAsync<TViewModel>(useModalNavigation, animated, wrapInNavigationPage, noHistory);
+        }
+
+        public static Task<INavigationResult> NavigateAsync<TViewModel, TParameter>(this INavigationViewModel self, TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
+            where TViewModel : INavigationViewModel<TParameter>
+        {
+            return self.NavigationService.NavigateAsync<TViewModel, TParameter>(parameter, useModalNavigation, animated, wrapInNavigationPage, noHistory);
+        }
+
+        public static Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TResult>(this INavigationViewModel self, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
+            where TViewModel : INavigationViewModelResult<TResult>
+        {
+            return self.NavigationService.NavigateAsync<TViewModel, TResult>(useModalNavigation, animated, wrapInNavigationPage, noHistory);
+        }
+
+        public static Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TParameter, TResult>(this INavigationViewModel self, TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
+            where TViewModel : INavigationViewModel<TParameter, TResult>
+        {
+            return self.NavigationService.NavigateAsync<TViewModel, TParameter, TResult>(parameter, useModalNavigation, animated, wrapInNavigationPage, noHistory);
+        }
+
+        public static Task<INavigationResult> NavigateAsync<TViewModel>(this INavigationViewModel self, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
+            where TViewModel : INavigationViewModel
+        {
+            return self.NavigationService.NavigateAsync<TViewModel>(useModalNavigation, animated, wrapInNavigationPage, noHistory, navigations);
+        }
+
+        public static Task<INavigationResult> NavigateAsync<TViewModel, TParameter>(this INavigationViewModel self, TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
+            where TViewModel : INavigationViewModel<TParameter>
+        {
+            return self.NavigationService.NavigateAsync<TViewModel, TParameter>(parameter, useModalNavigation, animated, wrapInNavigationPage, noHistory, navigations);
+        }
+
+        public static Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TResult>(this INavigationViewModel self, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
+            where TViewModel : INavigationViewModelResult<TResult>
+        {
+            return self.NavigationService.NavigateAsync<TViewModel, TResult>(useModalNavigation, animated, wrapInNavigationPage, noHistory, navigations);
+        }
+
+        public static Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TParameter, TResult>(this INavigationViewModel self, TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
+            where TViewModel : INavigationViewModel<TParameter, TResult>
+        {
+            return self.NavigationService.NavigateAsync<TViewModel, TParameter, TResult>(parameter, useModalNavigation, animated, wrapInNavigationPage, noHistory, navigations);
+        }
+
+        public static Task<INavigationResult> GoBackAsync(this INavigationViewModel self, bool? useModalNavigation = null, bool animated = true)
+        {
+            return self.NavigationService.GoBackAsync(useModalNavigation: useModalNavigation, animated: animated);
+        }
+
+        public static Task<INavigationResult> GoBackToRootAsync(this INavigationViewModel self)
+        {
+            return self.NavigationService.GoBackToRootAsync();
+        }
+
+        public static Task<INavigationResult> GoBackAsync<TResult>(this INavigationViewModelResult<TResult> self, TResult result, bool? useModalNavigation = null, bool animated = true)
+        {
+            return self.NavigationService.GoBackAsync(self, result, useModalNavigation, animated);
+        }
+
+        public static Task<INavigationResult> GoBackToRootAsync<TResult>(this INavigationViewModelResult<TResult> self, TResult result)
+        {
+            return self.NavigationService.GoBackToRootAsync(self, result);
         }
     }
 }

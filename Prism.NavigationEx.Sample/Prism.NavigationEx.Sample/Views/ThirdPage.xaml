@@ -7,5 +7,6 @@
         <Entry Text="{Binding Text.Value}"/>
         <Button Text="OK" Command="{Binding OkCommand}" HorizontalOptions="Center" />
         <Button Text="Cancel" Command="{Binding CancelCommand}" HorizontalOptions="Center"/>
+        <Button Text="Go Back to Main Page" Command="{Binding GoBackToMainPageCommand}" HorizontalOptions="Center"/>
     </StackLayout>
 </ContentPage>

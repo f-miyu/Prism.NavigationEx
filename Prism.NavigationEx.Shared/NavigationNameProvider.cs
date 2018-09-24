@@ -7,7 +7,16 @@ namespace Prism.NavigationEx
     public static class NavigationNameProvider
     {
         private static Func<Type, string> _defaultViewModelTypeToNavigationNameResolver =
-            viewModelType => Regex.Replace(viewModelType.Name, @"(.+)ViewModel$", "$1");
+            viewModelType =>
+            {
+                var suffix = "ViewModel";
+                var name = viewModelType.Name;
+                if (name.EndsWith(suffix))
+                {
+                    name = name.Substring(0, name.Length - suffix.Length);
+                }
+                return name;
+            };
 
         private static Func<Type, string> _defaultViewModelTypeToNavigationPageNameResolver =
             viewModelType => "NavigationPage";

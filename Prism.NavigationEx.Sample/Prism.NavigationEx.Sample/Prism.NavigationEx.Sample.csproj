@@ -1,16 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="3.2.0.839982" />
     <PackageReference Include="ReactiveProperty" Version="5.2.0" />
     <PackageReference Include="Prism.DryIoc.Forms" Version="7.1.0.279-pre" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\Prism.NavigationEx\Prism.NavigationEx.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="ViewModels\ConfirmnNavigationViewModelResult.cs" />
+    <Compile Remove="Views\View.xaml.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="Views\View.xaml" />
   </ItemGroup>
 </Project>

@@ -6,5 +6,6 @@
     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Padding="8">
         <Label Text="{Binding Text.Value}" HorizontalOptions="Center"/>
         <Button Text="Go to Second Page" Command="{Binding GoToSecondPpageCommand}" HorizontalOptions="Center"/>
+        <Button Text="Deep Link" Command="{Binding DeepLinkCommand}" HorizontalOptions="Center"/>
     </StackLayout>
 </ContentPage>

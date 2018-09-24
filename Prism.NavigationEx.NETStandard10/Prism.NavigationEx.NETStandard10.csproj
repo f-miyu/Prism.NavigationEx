@@ -8,7 +8,6 @@
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType></DebugType>
-    <DocumentationFile>bin\Release\netstandard1.6\Prism.NavigationEx.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Prism.Forms" Version="7.1.0.279-pre" />

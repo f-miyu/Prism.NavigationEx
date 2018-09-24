@@ -1,24 +1,46 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Prism.Navigation;
 using Reactive.Bindings;
+using Prism.Services;
 
 namespace Prism.NavigationEx.Sample.ViewModels
 {
-    public class ThirdPageViewModel : NavigationViewModel<int, int>
+    public class ThirdPageViewModel : NavigationWithConfirmByViewModel<string, string, bool>
     {
         public ReactivePropertySlim<string> Text { get; } = new ReactivePropertySlim<string>();
-        public ReactiveCommand OkCommand { get; } = new ReactiveCommand();
-        public ReactiveCommand CancelCommand { get; } = new ReactiveCommand();
+        public AsyncReactiveCommand OkCommand { get; } = new AsyncReactiveCommand();
+        public AsyncReactiveCommand CancelCommand { get; } = new AsyncReactiveCommand();
+        public AsyncReactiveCommand GoBackToMainPageCommand { get; } = new AsyncReactiveCommand();
 
-        public ThirdPageViewModel(INavigationService navigationService) : base(navigationService)
+        private readonly IPageDialogService _pageDialogService;
+
+        public ThirdPageViewModel(INavigationService navigationService, IPageDialogService pageDialogService) : base(navigationService)
         {
-            OkCommand.Subscribe(() => GoBackToRootAsync(100));
-            CancelCommand.Subscribe(() => GoBackToRootAsync());
+            _pageDialogService = pageDialogService;
+
+            OkCommand.Subscribe(async () => await this.GoBackWithConfirmAsync(Text.Value, false));
+            CancelCommand.Subscribe(async () => await this.GoBackWithConfirmAsync(false));
+            GoBackToMainPageCommand.Subscribe(async () => await this.GoBackToRootWithConfirmAsync(true));
         }
 
-        public override void Prepare(int parameer)
+        public override void Prepare(string parameter)
         {
-            Text.Value = parameer.ToString();
+            Text.Value = parameter;
+        }
+
+        public override Task<bool> CanNavigateAtNewAsync(bool parameter)
+        {
+            return Task.FromResult(true);
+        }
+
+        public override Task<bool> CanNavigateAtBackAsync(bool parameter)
+        {
+            if (parameter)
+            {
+                return _pageDialogService.DisplayAlertAsync("Are you sure?", null, "Yes", "No");
+            }
+            return Task.FromResult(true);
         }
     }
 }

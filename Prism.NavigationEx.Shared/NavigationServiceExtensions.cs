@@ -69,13 +69,33 @@ namespace Prism.NavigationEx
             return navigationService.NavigateWithNavigationAsync<TResult>(firstNavigation, null, useModalNavigation, animated, wrapInNavigationPage, noHistory, navigations);
         }
 
-        public static Task<INavigationResult> NavigateWithConfirmingAsync<TViewModel, TConfirmParameter>(this INavigationService navigationService, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
-           where TViewModel : INavigationViewModel
+        public static Task<INavigationResult> GoBackAsync<TResult>(this INavigationService navigationService, INavigationViewModelResult<TResult> viewModel, TResult result, bool? useModalNavigation = null, bool animated = true)
+        {
+            var parameters = new NavigationParameters
+            {
+                {viewModel.ResultParameterKey, result}
+            };
+
+            return navigationService.GoBackAsync(parameters: parameters, useModalNavigation: useModalNavigation, animated: animated);
+        }
+
+        public static Task<INavigationResult> GoBackToRootAsync<TResult>(this INavigationService navigationService, INavigationViewModelResult<TResult> viewModel, TResult result)
+        {
+            var parameters = new NavigationParameters
+            {
+                {viewModel.ResultParameterKey, result}
+            };
+
+            return navigationService.GoBackToRootAsync(parameters);
+        }
+
+        public static Task<INavigationResult> NavigateWithConfirmAsync<TViewModel, TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModel<TConfirmParameter> viewModel, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
+            where TViewModel : INavigationViewModel
         {
             return navigationService.NavigateWihTypeAsync(typeof(TViewModel), null, confirmParameter, useModalNavigation, animated, wrapInNavigationPage, noHistory);
         }
 
-        public static Task<INavigationResult> NavigateWithConfirmingAsync<TViewModel, TParameter, TConfirmParameter>(this INavigationService navigationService, TParameter parameter, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
+        public static Task<INavigationResult> NavigateWithConfirmAsync<TViewModel, TParameter, TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModel<TConfirmParameter> viewModel, TParameter parameter, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
             where TViewModel : INavigationViewModel<TParameter>
         {
             var parameters = new NavigationParameters
@@ -86,13 +106,13 @@ namespace Prism.NavigationEx
             return navigationService.NavigateWihTypeAsync(typeof(TViewModel), parameters, confirmParameter, useModalNavigation, animated, wrapInNavigationPage, noHistory);
         }
 
-        public static Task<INavigationResult<TResult>> NavigateWithConfirmingAsync<TViewModel, TResult, TConfirmParameter>(this INavigationService navigationService, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
+        public static Task<INavigationResult<TResult>> NavigateWithConfirmAsync<TViewModel, TResult, TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModel<TConfirmParameter> viewModel, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
             where TViewModel : INavigationViewModelResult<TResult>
         {
             return navigationService.NavigateWihTypeAsync<TResult>(typeof(TViewModel), null, confirmParameter, useModalNavigation, animated, wrapInNavigationPage, noHistory);
         }
 
-        public static Task<INavigationResult<TResult>> NavigateWithConfirmingAsync<TViewModel, TParameter, TResult, TConfirmParameter>(this INavigationService navigationService, TParameter parameter, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
+        public static Task<INavigationResult<TResult>> NavigateWithConfirmAsync<TViewModel, TParameter, TResult, TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModel<TConfirmParameter> viewModel, TParameter parameter, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
             where TViewModel : INavigationViewModel<TParameter, TResult>
         {
             var parameters = new NavigationParameters
@@ -103,49 +123,71 @@ namespace Prism.NavigationEx
             return navigationService.NavigateWihTypeAsync<TResult>(typeof(TViewModel), parameters, confirmParameter, useModalNavigation, animated, wrapInNavigationPage, noHistory);
         }
 
-        public static Task<INavigationResult> NavigateWithConfirmingAsync<TViewModel, TConfirmParameter>(this INavigationService navigationService, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
+        public static Task<INavigationResult> NavigateWithConfirmAsync<TViewModel, TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModel<TConfirmParameter> viewModel, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
             where TViewModel : INavigationViewModel
         {
             var firstNavigation = new Navigation<TViewModel>();
             return navigationService.NavigateWithNavigationAsync(firstNavigation, confirmParameter, useModalNavigation, animated, wrapInNavigationPage, noHistory, navigations);
         }
 
-        public static Task<INavigationResult> NavigateWithConfirmingAsync<TViewModel, TParameter, TConfirmParameter>(this INavigationService navigationService, TParameter parameter, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
+        public static Task<INavigationResult> NavigateWithConfirmAsync<TViewModel, TParameter, TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModel<TConfirmParameter> viewModel, TParameter parameter, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
             where TViewModel : INavigationViewModel<TParameter>
         {
             var firstNavigation = new Navigation<TViewModel, TParameter> { Parameter = parameter };
             return navigationService.NavigateWithNavigationAsync(firstNavigation, confirmParameter, useModalNavigation, animated, wrapInNavigationPage, noHistory, navigations);
         }
 
-        public static Task<INavigationResult<TResult>> NavigateWithConfirmingAsync<TViewModel, TResult, TConfirmParameter>(this INavigationService navigationService, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
+        public static Task<INavigationResult<TResult>> NavigateWithConfirmAsync<TViewModel, TResult, TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModel<TConfirmParameter> viewModel, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
             where TViewModel : INavigationViewModelResult<TResult>
         {
             var firstNavigation = new Navigation<TViewModel>();
             return navigationService.NavigateWithNavigationAsync<TResult>(firstNavigation, confirmParameter, useModalNavigation, animated, wrapInNavigationPage, noHistory, navigations);
         }
 
-        public static Task<INavigationResult<TResult>> NavigateWithConfirmingAsync<TViewModel, TParameter, TResult, TConfirmParameter>(this INavigationService navigationService, TParameter parameter, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
+        public static Task<INavigationResult<TResult>> NavigateWithConfirmAsync<TViewModel, TParameter, TResult, TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModel<TConfirmParameter> viewModel, TParameter parameter, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, params INavigation[] navigations)
             where TViewModel : INavigationViewModel<TParameter, TResult>
         {
             var firstNavigation = new Navigation<TViewModel, TParameter> { Parameter = parameter };
             return navigationService.NavigateWithNavigationAsync<TResult>(firstNavigation, confirmParameter, useModalNavigation, animated, wrapInNavigationPage, noHistory, navigations);
         }
 
-        public static Task<INavigationResult> GoBackAsync<TResult>(this INavigationService navigationService, TResult result, string resultParameterKey, bool? useModalNavigation = null, bool animated = true)
+        public static Task<INavigationResult> GoBackWithConfirmAsync<TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModel<TConfirmParameter> viewModel, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true)
         {
             var parameters = new NavigationParameters
             {
-                {resultParameterKey, result}
+                {NavigationParameterKey.ConfirmParameter, confirmParameter}
             };
 
             return navigationService.GoBackAsync(parameters: parameters, useModalNavigation: useModalNavigation, animated: animated);
         }
 
-        public static Task<INavigationResult> GoBackToRootAsync<TResult>(this INavigationService navigationService, TResult result, string resultParameterKey)
+        public static Task<INavigationResult> GoBackToRootWithConfirmAsync<TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModel<TConfirmParameter> viewModel, TConfirmParameter confirmParameter)
         {
             var parameters = new NavigationParameters
             {
-                {resultParameterKey, result}
+                {NavigationParameterKey.ConfirmParameter, confirmParameter}
+            };
+
+            return navigationService.GoBackToRootAsync(parameters);
+        }
+
+        public static Task<INavigationResult> GoBackWithConfirmAsync<TResult, TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModelResult<TResult, TConfirmParameter> viewModel, TResult result, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true)
+        {
+            var parameters = new NavigationParameters
+            {
+                {viewModel.ResultParameterKey, result},
+                {NavigationParameterKey.ConfirmParameter, confirmParameter}
+            };
+
+            return navigationService.GoBackAsync(parameters: parameters, useModalNavigation: useModalNavigation, animated: animated);
+        }
+
+        public static Task<INavigationResult> GoBackToRootWithConfirmAsync<TResult, TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModelResult<TResult, TConfirmParameter> viewModel, TResult result, TConfirmParameter confirmParameter)
+        {
+            var parameters = new NavigationParameters
+            {
+                {viewModel.ResultParameterKey, result},
+                {NavigationParameterKey.ConfirmParameter, confirmParameter}
             };
 
             return navigationService.GoBackToRootAsync(parameters);

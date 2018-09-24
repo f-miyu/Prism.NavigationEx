@@ -17,24 +17,24 @@ namespace Prism.NavigationEx.Sample.ViewModels
         public AsyncReactiveCommand GoToSecondPpageCommand { get; } = new AsyncReactiveCommand();
         public AsyncReactiveCommand DeepLinkCommand { get; } = new AsyncReactiveCommand();
 
-        private CancellationTokenSource _cts;
-
         public MainPageViewModel(INavigationService navigationService) : base(navigationService)
         {
             GoToSecondPpageCommand.Subscribe(async () =>
             {
-                var result = await NavigateAsync<SecondPageViewModel, string>(false, true, false, false);
+                var result = await this.NavigateAsync<SecondPageViewModel, string>(false, true, false, false);
                 if (result.Success)
                 {
                     Text.Value = result.Data;
                 }
-
-                // var result = await NavigationService.NavigateAsync<SecondPageViewModel, string>(false, true, false, false, null, new Navigation<ThirdPageViewModel, int> { Parameter = 5 }, new Navigation<SecondPageViewModel, string> { Parameter = "vvv" });
             });
 
             DeepLinkCommand.Subscribe(async () =>
             {
-
+                var result = await this.NavigateAsync<SecondPageViewModel, string>(false, true, false, false, new Navigation<ThirdPageViewModel, string> { Parameter = Text.Value });
+                if (result.Success)
+                {
+                    Text.Value = result.Data;
+                }
             });
         }
     }
