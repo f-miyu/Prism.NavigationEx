@@ -74,12 +74,12 @@ namespace Prism.NavigationEx
 
         public static Task<INavigationResult> GoBackAsync(this INavigationViewModel self, bool? useModalNavigation = null, bool animated = true)
         {
-            return self.NavigationService.GoBackAsync(useModalNavigation: useModalNavigation, animated: animated);
+            return self.NavigationService.GoBackAsync(self, useModalNavigation, animated);
         }
 
         public static Task<INavigationResult> GoBackToRootAsync(this INavigationViewModel self)
         {
-            return self.NavigationService.GoBackToRootAsync();
+            return self.NavigationService.GoBackToRootAsync(self);
         }
 
         public static Task<INavigationResult> GoBackAsync<TResult>(this INavigationViewModelResult<TResult> self, TResult result, bool? useModalNavigation = null, bool animated = true)

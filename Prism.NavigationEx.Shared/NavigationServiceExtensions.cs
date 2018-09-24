@@ -69,11 +69,35 @@ namespace Prism.NavigationEx
             return navigationService.NavigateWithNavigationAsync<TResult>(firstNavigation, null, useModalNavigation, animated, wrapInNavigationPage, noHistory, navigations);
         }
 
-        public static Task<INavigationResult> GoBackAsync<TResult>(this INavigationService navigationService, INavigationViewModelResult<TResult> viewModel, TResult result, bool? useModalNavigation = null, bool animated = true)
+        public static Task<INavigationResult> GoBackAsync(this INavigationService navigationService, INavigationViewModel viewModel, bool? useModalNavigation = null, bool animated = true)
         {
+            Action<INavigationParameters> onNavigatingFrom = viewModel.OnNavigatingFrom;
             var parameters = new NavigationParameters
             {
-                {viewModel.ResultParameterKey, result}
+                {NavigationParameterKey.OnNavigatingFrom, onNavigatingFrom}
+            };
+
+            return navigationService.GoBackAsync(parameters: parameters, useModalNavigation: useModalNavigation, animated: animated);
+        }
+
+        public static Task<INavigationResult> GoBackToRootAsync(this INavigationService navigationService, INavigationViewModel viewModel)
+        {
+            Action<INavigationParameters> onNavigatingFrom = viewModel.OnNavigatingFrom;
+            var parameters = new NavigationParameters
+            {
+                {NavigationParameterKey.OnNavigatingFrom, onNavigatingFrom}
+            };
+
+            return navigationService.GoBackToRootAsync(parameters);
+        }
+
+        public static Task<INavigationResult> GoBackAsync<TResult>(this INavigationService navigationService, INavigationViewModelResult<TResult> viewModel, TResult result, bool? useModalNavigation = null, bool animated = true)
+        {
+            Action<INavigationParameters> onNavigatingFrom = viewModel.OnNavigatingFrom;
+            var parameters = new NavigationParameters
+            {
+                {NavigationParameterKey.Result, result},
+                {NavigationParameterKey.OnNavigatingFrom, onNavigatingFrom}
             };
 
             return navigationService.GoBackAsync(parameters: parameters, useModalNavigation: useModalNavigation, animated: animated);
@@ -81,9 +105,11 @@ namespace Prism.NavigationEx
 
         public static Task<INavigationResult> GoBackToRootAsync<TResult>(this INavigationService navigationService, INavigationViewModelResult<TResult> viewModel, TResult result)
         {
+            Action<INavigationParameters> onNavigatingFrom = viewModel.OnNavigatingFrom;
             var parameters = new NavigationParameters
             {
-                {viewModel.ResultParameterKey, result}
+                {NavigationParameterKey.Result, result},
+                {NavigationParameterKey.OnNavigatingFrom, onNavigatingFrom}
             };
 
             return navigationService.GoBackToRootAsync(parameters);
@@ -153,9 +179,11 @@ namespace Prism.NavigationEx
 
         public static Task<INavigationResult> GoBackWithConfirmAsync<TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModel<TConfirmParameter> viewModel, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true)
         {
+            Action<INavigationParameters> onNavigatingFrom = viewModel.OnNavigatingFrom;
             var parameters = new NavigationParameters
             {
-                {NavigationParameterKey.ConfirmParameter, confirmParameter}
+                {NavigationParameterKey.ConfirmParameter, confirmParameter},
+                {NavigationParameterKey.OnNavigatingFrom, onNavigatingFrom}
             };
 
             return navigationService.GoBackAsync(parameters: parameters, useModalNavigation: useModalNavigation, animated: animated);
@@ -163,9 +191,11 @@ namespace Prism.NavigationEx
 
         public static Task<INavigationResult> GoBackToRootWithConfirmAsync<TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModel<TConfirmParameter> viewModel, TConfirmParameter confirmParameter)
         {
+            Action<INavigationParameters> onNavigatingFrom = viewModel.OnNavigatingFrom;
             var parameters = new NavigationParameters
             {
-                {NavigationParameterKey.ConfirmParameter, confirmParameter}
+                {NavigationParameterKey.ConfirmParameter, confirmParameter},
+                {NavigationParameterKey.OnNavigatingFrom, onNavigatingFrom}
             };
 
             return navigationService.GoBackToRootAsync(parameters);
@@ -173,10 +203,12 @@ namespace Prism.NavigationEx
 
         public static Task<INavigationResult> GoBackWithConfirmAsync<TResult, TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModelResult<TResult, TConfirmParameter> viewModel, TResult result, TConfirmParameter confirmParameter, bool? useModalNavigation = null, bool animated = true)
         {
+            Action<INavigationParameters> onNavigatingFrom = viewModel.OnNavigatingFrom;
             var parameters = new NavigationParameters
             {
-                {viewModel.ResultParameterKey, result},
-                {NavigationParameterKey.ConfirmParameter, confirmParameter}
+                {NavigationParameterKey.Result, result},
+                {NavigationParameterKey.ConfirmParameter, confirmParameter},
+                {NavigationParameterKey.OnNavigatingFrom, onNavigatingFrom}
             };
 
             return navigationService.GoBackAsync(parameters: parameters, useModalNavigation: useModalNavigation, animated: animated);
@@ -184,10 +216,12 @@ namespace Prism.NavigationEx
 
         public static Task<INavigationResult> GoBackToRootWithConfirmAsync<TResult, TConfirmParameter>(this INavigationService navigationService, INavigationWithConfirmByViewModelResult<TResult, TConfirmParameter> viewModel, TResult result, TConfirmParameter confirmParameter)
         {
+            Action<INavigationParameters> onNavigatingFrom = viewModel.OnNavigatingFrom;
             var parameters = new NavigationParameters
             {
-                {viewModel.ResultParameterKey, result},
-                {NavigationParameterKey.ConfirmParameter, confirmParameter}
+                {NavigationParameterKey.Result, result},
+                {NavigationParameterKey.ConfirmParameter, confirmParameter},
+                {NavigationParameterKey.OnNavigatingFrom, onNavigatingFrom}
             };
 
             return navigationService.GoBackToRootAsync(parameters);

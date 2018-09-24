@@ -19,12 +19,21 @@ namespace Prism.NavigationEx
         {
         }
 
+        public virtual void OnNavigatingFrom(INavigationParameters parameters)
+        {
+        }
+
         public virtual void OnNavigatedTo(INavigationParameters parameters)
         {
         }
 
         public virtual void OnNavigatingTo(INavigationParameters parameters)
         {
+            if (parameters.GetNavigationMode() == NavigationMode.Back &&
+                parameters.TryGetValue<Action<INavigationParameters>>(NavigationParameterKey.OnNavigatingFrom, out var onNavigatingFrom))
+            {
+                onNavigatingFrom(parameters);
+            }
         }
 
         public virtual void Destroy()
@@ -52,8 +61,6 @@ namespace Prism.NavigationEx
     {
         private TaskCompletionSource<INavigationResult<TResult>> _tcs;
 
-        public string ResultParameterKey { get; } = Guid.NewGuid().ToString();
-
         protected NavigationViewModelResult(INavigationService navigationService) : base(navigationService)
         {
         }
@@ -74,14 +81,14 @@ namespace Prism.NavigationEx
             }
         }
 
-        public override void OnNavigatedFrom(INavigationParameters parameters)
+        public override void OnNavigatingFrom(INavigationParameters parameters)
         {
-            base.OnNavigatedFrom(parameters);
+            base.OnNavigatingFrom(parameters);
 
             if (_tcs == null || parameters.GetNavigationMode() == NavigationMode.New)
                 return;
 
-            if (parameters.TryGetValue<TResult>(ResultParameterKey, out var result))
+            if (parameters.TryGetValue<TResult>(NavigationParameterKey.Result, out var result))
             {
                 _tcs.TrySetResult(new NavigationResult<TResult>(true, result));
             }

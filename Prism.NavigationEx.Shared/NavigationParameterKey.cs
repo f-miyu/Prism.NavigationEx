@@ -9,5 +9,7 @@ namespace Prism.NavigationEx
         public static readonly string TaskCompletionSourceId = "taskCompletionSourceId";
         public static readonly string ConfirmParameter = "confirmParameter";
         public static readonly string CancellationTokenSource = "cancellationTokenSource";
+        public static readonly string OnNavigatingFrom = "onNavigatingFrom";
+        public static readonly string Result = "result";
     }
 }
