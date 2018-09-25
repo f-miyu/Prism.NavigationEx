@@ -20,11 +20,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)INavigationViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NavigationViewModelExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NavigationParameterKey.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)NavigationWithConfirmViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)NavigationWithConfirmByViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)INavigationWithConfirmByViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)NavigationWithConfirmByViewModelExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)INavigationWithConfirmViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)NavigationWithConfirmViewModelExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConfirmNavigationViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IConfirmNavigationViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConfirmNavigationViewModelExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResultDelegate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResultEventArgs.cs" />
   </ItemGroup>
 </Project>

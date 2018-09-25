@@ -6,7 +6,7 @@ using Prism.Services;
 
 namespace Prism.NavigationEx.Sample.ViewModels
 {
-    public class ThirdPageViewModel : NavigationWithConfirmByViewModel<string, string, bool>
+    public class ThirdPageViewModel : ConfirmNavigationViewModel<string, string, bool>
     {
         public ReactivePropertySlim<string> Text { get; } = new ReactivePropertySlim<string>();
         public AsyncReactiveCommand OkCommand { get; } = new AsyncReactiveCommand();
@@ -21,17 +21,12 @@ namespace Prism.NavigationEx.Sample.ViewModels
 
             OkCommand.Subscribe(async () => await this.GoBackWithConfirmAsync(Text.Value, false));
             CancelCommand.Subscribe(async () => await this.GoBackWithConfirmAsync(false));
-            GoBackToMainPageCommand.Subscribe(async () => await this.GoBackToRootWithConfirmAsync(true));
+            GoBackToMainPageCommand.Subscribe(async () => await this.GoBackToRootWithConfirmAsync(Text.Value, true));
         }
 
         public override void Prepare(string parameter)
         {
             Text.Value = parameter;
-        }
-
-        public override Task<bool> CanNavigateAtNewAsync(bool parameter)
-        {
-            return Task.FromResult(true);
         }
 
         public override Task<bool> CanNavigateAtBackAsync(bool parameter)

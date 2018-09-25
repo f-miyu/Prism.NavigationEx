@@ -3,12 +3,16 @@ using System.Threading.Tasks;
 using Prism.Mvvm;
 using Prism.Navigation;
 using System.Threading;
+using Xamarin.Forms;
+using Prism.Events;
+using System.Collections.Generic;
 
 namespace Prism.NavigationEx
 {
-    public abstract class NavigationViewModel : BindableBase, INavigationViewModel, INavigationAware, IDestructible
+    public abstract class NavigationViewModel : BindableBase, INavigationViewModel
     {
         public INavigationService NavigationService { get; }
+        private Action<INavigationViewModel, INavigationParameters> _onResult;
 
         protected NavigationViewModel(INavigationService navigationService)
         {
@@ -29,15 +33,55 @@ namespace Prism.NavigationEx
 
         public virtual void OnNavigatingTo(INavigationParameters parameters)
         {
-            if (parameters.GetNavigationMode() == NavigationMode.Back &&
-                parameters.TryGetValue<Action<INavigationParameters>>(NavigationParameterKey.OnNavigatingFrom, out var onNavigatingFrom))
+            if (parameters.GetNavigationMode() == NavigationMode.New && parameters.TryGetValue<string>(NavigationParameterKey.OnResultId, out var id))
             {
-                onNavigatingFrom(parameters);
+                parameters.TryGetValue<Action<INavigationViewModel, INavigationParameters>>(id, out _onResult);
+            }
+
+            if (parameters.GetNavigationMode() == NavigationMode.Back && _onResult != null)
+            {
+                _onResult(this, parameters);
             }
         }
 
         public virtual void Destroy()
         {
+        }
+
+        public virtual async Task<bool> CanNavigateAsync(INavigationParameters parameters)
+        {
+            var result = true;
+
+            if (parameters.GetNavigationMode() == NavigationMode.Back)
+            {
+                result = await CanNavigateAtBackAsync().ConfigureAwait(false);
+            }
+            else
+            {
+                result = await CanNavigateAtNewAsync().ConfigureAwait(false);
+
+                if (!result && parameters.TryGetValue<CancellationTokenSource>(NavigationParameterKey.CancellationTokenSource, out var cts))
+                {
+                    cts.Cancel();
+                }
+            }
+
+            if (result && parameters.TryGetValue<Action<INavigationParameters>>(NavigationParameterKey.OnNavigatingFrom, out var onNavigatingFrom))
+            {
+                onNavigatingFrom(parameters);
+            }
+
+            return result;
+        }
+
+        public virtual Task<bool> CanNavigateAtNewAsync()
+        {
+            return Task.FromResult(true);
+        }
+
+        public virtual Task<bool> CanNavigateAtBackAsync()
+        {
+            return Task.FromResult(true);
         }
     }
 

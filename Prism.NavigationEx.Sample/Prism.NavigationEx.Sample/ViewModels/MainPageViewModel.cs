@@ -30,12 +30,18 @@ namespace Prism.NavigationEx.Sample.ViewModels
 
             DeepLinkCommand.Subscribe(async () =>
             {
-                var result = await this.NavigateAsync<SecondPageViewModel, string>(false, true, false, false, new Navigation<ThirdPageViewModel, string> { Parameter = Text.Value });
+                var result = await this.NavigateAsync<SecondPageViewModel, string>(false, true, false, false,
+                                                                                   new Navigation<ThirdPageViewModel, string> { Parameter = Text.Value });
                 if (result.Success)
                 {
                     Text.Value = result.Data;
                 }
             });
+        }
+
+        public override void OnNavigatingFrom(INavigationParameters parameters)
+        {
+            base.OnNavigatingFrom(parameters);
         }
     }
 }

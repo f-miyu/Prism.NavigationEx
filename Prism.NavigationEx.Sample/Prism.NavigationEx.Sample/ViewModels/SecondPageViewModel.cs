@@ -27,5 +27,10 @@ namespace Prism.NavigationEx.Sample.ViewModels
                 }
             });
         }
+
+        public override Task<bool> CanNavigateAtNewAsync()
+        {
+            return base.CanNavigateAtNewAsync();
+        }
     }
 }
