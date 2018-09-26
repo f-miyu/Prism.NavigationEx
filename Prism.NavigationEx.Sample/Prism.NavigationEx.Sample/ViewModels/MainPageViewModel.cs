@@ -30,8 +30,11 @@ namespace Prism.NavigationEx.Sample.ViewModels
 
             DeepLinkCommand.Subscribe(async () =>
             {
-                var result = await this.NavigateAsync<SecondPageViewModel, string>(false, true, false, false,
-                                                                                   new Navigation<ThirdPageViewModel, string> { Parameter = Text.Value });
+                var navigation = new NavigationBuilder().AddReceivableNavigation<SecondPageViewModel, string>((viewModel, r) => viewModel.Text.Value = r.Data)
+                                                        .AddNavigation<ThirdPageViewModel, string>(Text.Value)
+                                                        .GetNavigation();
+
+                var result = await NavigationService.NavigateAsync<SecondPageViewModel, string>((INavigation<SecondPageViewModel>)navigation);
                 if (result.Success)
                 {
                     Text.Value = result.Data;

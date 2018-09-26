@@ -1,67 +1,65 @@
 ﻿using System;
 using Prism.Navigation;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Threading;
 namespace Prism.NavigationEx
 {
-    public class Navigation<TViewModel> : INavigation where TViewModel : INavigationViewModel
+    public delegate void ResultReceivedDelegate<TViewModel, TResult>(TViewModel viewModel, INavigationResult<TResult> result);
+
+    public class Navigation<TViewModel> : INavigation, INavigation<TViewModel> where TViewModel : INavigationViewModel
     {
         public Type ViewModelType => typeof(TViewModel);
 
-        private object _parameter;
-        public object Parameter
+        public INavigation NextNavigation { get; set; }
+
+        public virtual string CreateNavigationPath(INavigationParameters parameters, IDictionary<string, string> pathParameters = null, IDictionary<string, string> nextPathParameters = null)
         {
-            get => _parameter;
-            protected set
+            if (parameters == null)
+                throw new ArgumentNullException(nameof(parameters));
+
+            var path = NavigationNameProvider.GetNavigationName(typeof(TViewModel));
+
+            if (pathParameters != null && pathParameters.Count > 0)
             {
-                _parameter = value;
-                ParameterExists = true;
+                path += "?" + string.Join("&", pathParameters.Select(pair => $"{pair.Key}={pair.Value}"));
             }
-        }
 
-        public bool ParameterExists { get; private set; }
+            if (NextNavigation != null)
+            {
+                path += "/" + NextNavigation.CreateNavigationPath(parameters, nextPathParameters);
+            }
 
-        public virtual void OnResult(INavigationViewModel viewModel, INavigationParameters parameters)
-        {
+            return path;
         }
     }
 
     public class Navigation<TViewModel, TParameter> : Navigation<TViewModel> where TViewModel : INavigationViewModel<TParameter>
     {
-        private TParameter _parameter;
-        public new TParameter Parameter
+        protected TParameter Parameter { get; private set; }
+
+        public Navigation(TParameter parameter)
         {
-            get => _parameter;
-            set
-            {
-                _parameter = value;
-                base.Parameter = value;
-            }
+            Parameter = parameter;
         }
-    }
 
-    public class NavigationResult<TViewModel, TResult> : Navigation<TViewModel> where TViewModel : INavigationViewModel
-    {
-        public event EventHandler<ResultEventArgs<TViewModel, TResult>> Result;
-
-        public override void OnResult(INavigationViewModel viewModel, INavigationParameters parameters)
+        public override string CreateNavigationPath(INavigationParameters parameters, IDictionary<string, string> pathParameters = null, IDictionary<string, string> nextPathParameters = null)
         {
-            if (Result != null && parameters.TryGetValue<TResult>(NavigationParameterKey.Result, out var result))
-            {
-                Result(this, new ResultEventArgs<TViewModel, TResult>((TViewModel)viewModel, result));
-            }
-        }
-    }
+            if (parameters == null)
+                throw new ArgumentNullException(nameof(parameters));
 
-    public class Navigation<TViewModel, TParameter, TResult> : NavigationResult<TViewModel, TResult> where TViewModel : INavigationViewModel<TParameter>
-    {
-        private TParameter _parameter;
-        public new TParameter Parameter
-        {
-            get => _parameter;
-            set
+            if (pathParameters == null)
             {
-                _parameter = value;
-                base.Parameter = value;
+                pathParameters = new Dictionary<string, string>();
             }
+
+            var parameterId = Guid.NewGuid().ToString();
+            pathParameters[NavigationParameterKey.ParameterId] = parameterId;
+            parameters.Add(parameterId, Parameter);
+
+            return base.CreateNavigationPath(parameters, pathParameters, nextPathParameters);
         }
     }
 }

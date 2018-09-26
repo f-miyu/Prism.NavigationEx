@@ -11,6 +11,6 @@ namespace Prism.NavigationEx
         public static readonly string CancellationTokenSource = "cancellationTokenSource";
         public static readonly string OnNavigatingFrom = "onNavigatingFrom";
         public static readonly string Result = "result";
-        public static readonly string OnResultId = "onResultId";
+        public static readonly string ReceiveResultId = "receiveResultId";
     }
 }

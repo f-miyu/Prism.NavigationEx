@@ -12,7 +12,7 @@ namespace Prism.NavigationEx
     public abstract class NavigationViewModel : BindableBase, INavigationViewModel
     {
         public INavigationService NavigationService { get; }
-        private Action<INavigationViewModel, INavigationParameters> _onResult;
+        private Func<INavigationViewModel, Task> _receiveResult;
 
         protected NavigationViewModel(INavigationService navigationService)
         {
@@ -33,14 +33,14 @@ namespace Prism.NavigationEx
 
         public virtual void OnNavigatingTo(INavigationParameters parameters)
         {
-            if (parameters.GetNavigationMode() == NavigationMode.New && parameters.TryGetValue<string>(NavigationParameterKey.OnResultId, out var id))
+            if (parameters.GetNavigationMode() == NavigationMode.New && parameters.TryGetValue<string>(NavigationParameterKey.ReceiveResultId, out var id))
             {
-                parameters.TryGetValue<Action<INavigationViewModel, INavigationParameters>>(id, out _onResult);
+                parameters.TryGetValue<Func<INavigationViewModel, Task>>(id, out _receiveResult);
             }
 
-            if (parameters.GetNavigationMode() == NavigationMode.Back && _onResult != null)
+            if (parameters.GetNavigationMode() == NavigationMode.Back && _receiveResult != null)
             {
-                _onResult(this, parameters);
+                _receiveResult(this);
             }
         }
 
@@ -103,7 +103,7 @@ namespace Prism.NavigationEx
 
     public abstract class NavigationViewModelResult<TResult> : NavigationViewModel, INavigationViewModelResult<TResult>
     {
-        private TaskCompletionSource<INavigationResult<TResult>> _tcs;
+        private TaskCompletionSource<TResult> _tcs;
 
         protected NavigationViewModelResult(INavigationService navigationService) : base(navigationService)
         {
@@ -115,12 +115,9 @@ namespace Prism.NavigationEx
 
             if (parameters.GetNavigationMode() == NavigationMode.New)
             {
-                if (!parameters.TryGetValue<TaskCompletionSource<INavigationResult<TResult>>>(NavigationParameterKey.TaskCompletionSource, out _tcs))
+                if (parameters.TryGetValue<string>(NavigationParameterKey.TaskCompletionSourceId, out var id))
                 {
-                    if (parameters.TryGetValue<string>(NavigationParameterKey.TaskCompletionSourceId, out var id))
-                    {
-                        parameters.TryGetValue<TaskCompletionSource<INavigationResult<TResult>>>(id, out _tcs);
-                    }
+                    parameters.TryGetValue<TaskCompletionSource<TResult>>(id, out _tcs);
                 }
             }
         }
@@ -134,7 +131,7 @@ namespace Prism.NavigationEx
 
             if (parameters.TryGetValue<TResult>(NavigationParameterKey.Result, out var result))
             {
-                _tcs.TrySetResult(new NavigationResult<TResult>(true, result));
+                _tcs.TrySetResult(result);
             }
             else
             {
