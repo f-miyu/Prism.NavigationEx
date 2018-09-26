@@ -30,7 +30,7 @@ namespace Prism.NavigationEx.Sample.ViewModels
 
             DeepLinkCommand.Subscribe(async () =>
             {
-                var navigation = new NavigationBuilder().AddReceivableNavigation<SecondPageViewModel, string>((viewModel, r) => viewModel.Text.Value = r.Data)
+                var navigation = new NavigationBuilder().AddNavigation<SecondPageViewModel, string>((viewModel, r) => viewModel.Text.Value = r.Data)
                                                         .AddNavigation<ThirdPageViewModel, string>(Text.Value)
                                                         .GetNavigation();
 

@@ -24,7 +24,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)IConfirmNavigationViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConfirmNavigationViewModelExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResultDelegate.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ResultEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ReceivableNavigation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NavigationBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResultNavigationBuilder.cs" />

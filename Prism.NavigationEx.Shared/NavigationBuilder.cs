@@ -25,7 +25,7 @@ namespace Prism.NavigationEx
             return this;
         }
 
-        public IResultNavigationBuilder<TResult> AddReceivableNavigation<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived) where TViewModel : INavigationViewModel
+        public IResultNavigationBuilder<TResult> AddNavigation<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived) where TViewModel : INavigationViewModel
         {
             var navigation = new ReceivableNavigation<TViewModel, TResult>(resultReceived);
 
@@ -34,7 +34,7 @@ namespace Prism.NavigationEx
             return new ResultNavigationBuilder<TResult>(this);
         }
 
-        public IResultNavigationBuilder<TResult> AddReceivableNavigation<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived) where TViewModel : INavigationViewModel<TParameter>
+        public IResultNavigationBuilder<TResult> AddNavigation<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived) where TViewModel : INavigationViewModel<TParameter>
         {
             var navigation = new ReceivableNavigation<TViewModel, TParameter, TResult>(parameter, resultReceived);
 

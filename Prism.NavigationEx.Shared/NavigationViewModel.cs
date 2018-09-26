@@ -66,10 +66,7 @@ namespace Prism.NavigationEx
                 }
             }
 
-            if (result && parameters.TryGetValue<Action<INavigationParameters>>(NavigationParameterKey.OnNavigatingFrom, out var onNavigatingFrom))
-            {
-                onNavigatingFrom(parameters);
-            }
+            OnNavigatingFrom(parameters);
 
             return result;
         }
