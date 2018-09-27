@@ -5,14 +5,11 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Data.SqlTypes;
 namespace Prism.NavigationEx
 {
-    public delegate void ResultReceivedDelegate<TViewModel, TResult>(TViewModel viewModel, INavigationResult<TResult> result);
-
-    public class Navigation<TViewModel> : INavigation, INavigation<TViewModel> where TViewModel : INavigationViewModel
+    public class Navigation<TViewModel> : INavigation where TViewModel : INavigationViewModel
     {
-        public Type ViewModelType => typeof(TViewModel);
-
         public INavigation NextNavigation { get; set; }
 
         public virtual string CreateNavigationPath(INavigationParameters parameters, IDictionary<string, string> pathParameters = null, IDictionary<string, string> nextPathParameters = null)

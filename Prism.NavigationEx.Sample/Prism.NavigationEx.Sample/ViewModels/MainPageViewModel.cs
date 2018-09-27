@@ -3,11 +3,6 @@ using Prism.Mvvm;
 using Prism.Navigation;
 using Reactive.Bindings;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Prism.NavigationEx.Sample.ViewModels
 {
@@ -15,36 +10,35 @@ namespace Prism.NavigationEx.Sample.ViewModels
     {
         public ReactivePropertySlim<string> Text { get; } = new ReactivePropertySlim<string>();
         public AsyncReactiveCommand GoToSecondPpageCommand { get; } = new AsyncReactiveCommand();
-        public AsyncReactiveCommand DeepLinkCommand { get; } = new AsyncReactiveCommand();
+        public AsyncReactiveCommand GoToThirdPageCommand { get; } = new AsyncReactiveCommand();
 
         public MainPageViewModel(INavigationService navigationService) : base(navigationService)
         {
             GoToSecondPpageCommand.Subscribe(async () =>
             {
-                var result = await this.NavigateAsync<SecondPageViewModel, string>(false, true, false, false);
+                var result = await this.NavigateAsync<SecondPageViewModel, string>();
                 if (result.Success)
                 {
                     Text.Value = result.Data;
                 }
             });
 
-            DeepLinkCommand.Subscribe(async () =>
+            GoToThirdPageCommand.Subscribe(async () =>
             {
-                var navigation = new NavigationBuilder().AddNavigation<SecondPageViewModel, string>((viewModel, r) => viewModel.Text.Value = r.Data)
-                                                        .AddNavigation<ThirdPageViewModel, string>(Text.Value)
-                                                        .GetNavigation();
+                var navigation = NavigationPath.Create<SecondPageViewModel, string>((viewModel, thirdPageResult) =>
+                {
+                    if (thirdPageResult.Success)
+                    {
+                        viewModel.Text.Value = thirdPageResult.Data;
+                    }
+                }).Add<ThirdPageViewModel, string>(Text.Value);
 
-                var result = await NavigationService.NavigateAsync<SecondPageViewModel, string>((INavigation<SecondPageViewModel>)navigation);
+                var result = await NavigationService.NavigateAsync<SecondPageViewModel, string>(navigation);
                 if (result.Success)
                 {
                     Text.Value = result.Data;
                 }
             });
-        }
-
-        public override void OnNavigatingFrom(INavigationParameters parameters)
-        {
-            base.OnNavigatingFrom(parameters);
         }
     }
 }

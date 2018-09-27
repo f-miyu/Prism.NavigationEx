@@ -66,7 +66,10 @@ namespace Prism.NavigationEx
                 }
             }
 
-            OnNavigatingFrom(parameters);
+            if (result)
+            {
+                OnNavigatingFrom(parameters);
+            }
 
             return result;
         }

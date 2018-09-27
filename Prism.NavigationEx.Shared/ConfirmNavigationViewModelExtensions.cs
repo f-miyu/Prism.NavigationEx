@@ -27,7 +27,10 @@ namespace Prism.NavigationEx
                 }
             }
 
-            self.OnNavigatingFrom(parameters);
+            if (result)
+            {
+                self.OnNavigatingFrom(parameters);
+            }
 
             return result;
         }

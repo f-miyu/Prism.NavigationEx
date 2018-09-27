@@ -23,11 +23,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ConfirmNavigationViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IConfirmNavigationViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConfirmNavigationViewModelExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ResultDelegate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ReceivableNavigation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)NavigationBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ResultNavigationBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)IResultNavigationBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)INavigationBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavigationPath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)INavigationPath.cs" />
   </ItemGroup>
 </Project>

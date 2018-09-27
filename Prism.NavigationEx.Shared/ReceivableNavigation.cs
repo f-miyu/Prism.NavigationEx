@@ -5,6 +5,8 @@ using Prism.Navigation;
 
 namespace Prism.NavigationEx
 {
+    public delegate void ResultReceivedDelegate<TViewModel, TResult>(TViewModel viewModel, INavigationResult<TResult> result);
+
     public class ReceivableNavigation<TViewModel, TResult> : Navigation<TViewModel> where TViewModel : INavigationViewModel
     {
         protected ResultReceivedDelegate<TViewModel, TResult> _resultReceived;
