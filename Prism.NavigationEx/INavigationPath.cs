@@ -1,7 +1,6 @@
 ﻿using System;
 using Prism.Navigation;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Prism.NavigationEx
