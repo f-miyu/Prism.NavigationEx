@@ -3,8 +3,6 @@ using Prism.Ioc;
 using Xamarin.Forms;
 using System.Reflection;
 using System.Linq;
-using System.Collections.Generic;
-using Prism.Mvvm;
 
 namespace Prism.NavigationEx
 {
