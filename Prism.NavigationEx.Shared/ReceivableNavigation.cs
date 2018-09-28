@@ -5,17 +5,11 @@ using Prism.Navigation;
 
 namespace Prism.NavigationEx
 {
-    public delegate void ResultReceivedDelegate<TViewModel, TResult>(TViewModel viewModel, INavigationResult<TResult> result);
-
     public class ReceivableNavigation<TViewModel, TResult> : Navigation<TViewModel> where TViewModel : INavigationViewModel
     {
-        protected ResultReceivedDelegate<TViewModel, TResult> _resultReceived;
-        protected TaskCompletionSource<TResult> _tcs;
+        public ResultReceivedDelegate<TViewModel, TResult> ResultReceived { get; set; }
 
-        public ReceivableNavigation(ResultReceivedDelegate<TViewModel, TResult> resultReceived)
-        {
-            _resultReceived = resultReceived;
-        }
+        protected TaskCompletionSource<TResult> _tcs;
 
         public async Task ReceiveResultAsync(INavigationViewModel viewModel)
         {
@@ -24,20 +18,22 @@ namespace Prism.NavigationEx
             try
             {
                 var result = await _tcs.Task.ConfigureAwait(false);
-                _resultReceived?.Invoke((TViewModel)viewModel, new NavigationResult<TResult>(true, result));
+                ResultReceived?.Invoke((TViewModel)viewModel, new NavigationResult<TResult>(true, result));
             }
             catch (Exception e)
             {
-                _resultReceived?.Invoke((TViewModel)viewModel, new NavigationResult<TResult>(false, default(TResult), e));
+                ResultReceived?.Invoke((TViewModel)viewModel, new NavigationResult<TResult>(false, default(TResult), e));
             }
         }
 
         public override string CreateNavigationPath(INavigationParameters parameters, IDictionary<string, string> pathParameters = null, IDictionary<string, string> nextPathParameters = null)
         {
             if (parameters == null)
-                throw new ArgumentNullException(nameof(parameters));
+            {
+                parameters = new NavigationParameters();
+            }
 
-            if (NextNavigation != null && _resultReceived != null)
+            if (NextNavigation != null)
             {
                 if (pathParameters == null)
                 {
@@ -71,17 +67,14 @@ namespace Prism.NavigationEx
 
     public class ReceivableNavigation<TViewModel, TParameter, TResult> : ReceivableNavigation<TViewModel, TResult> where TViewModel : INavigationViewModel<TParameter>
     {
-        public TParameter Parameter { get; private set; }
-
-        public ReceivableNavigation(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived) : base(resultReceived)
-        {
-            Parameter = parameter;
-        }
+        public TParameter Parameter { get; set; }
 
         public override string CreateNavigationPath(INavigationParameters parameters, IDictionary<string, string> pathParameters = null, IDictionary<string, string> nextPathParameters = null)
         {
             if (parameters == null)
-                throw new ArgumentNullException(nameof(parameters));
+            {
+                parameters = new NavigationParameters();
+            }
 
             if (pathParameters == null)
             {

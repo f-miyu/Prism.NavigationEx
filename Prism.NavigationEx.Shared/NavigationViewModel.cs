@@ -11,7 +11,7 @@ namespace Prism.NavigationEx
 {
     public abstract class NavigationViewModel : BindableBase, INavigationViewModel
     {
-        public INavigationService NavigationService { get; }
+        protected INavigationService NavigationService { get; }
         private Func<INavigationViewModel, Task> _receiveResult;
 
         protected NavigationViewModel(INavigationService navigationService)
@@ -51,19 +51,24 @@ namespace Prism.NavigationEx
         public virtual async Task<bool> CanNavigateAsync(INavigationParameters parameters)
         {
             var result = true;
+            Func<Task<bool>> canNavigate = null;
 
-            if (parameters.GetNavigationMode() == NavigationMode.Back)
+            if (!parameters.TryGetValue<Func<Task<bool>>>(NavigationParameterKey.CanNavigate, out canNavigate))
             {
-                result = await CanNavigateAtBackAsync().ConfigureAwait(false);
-            }
-            else
-            {
-                result = await CanNavigateAtNewAsync().ConfigureAwait(false);
-
-                if (!result && parameters.TryGetValue<CancellationTokenSource>(NavigationParameterKey.CancellationTokenSource, out var cts))
+                if (parameters.TryGetValue<string>(NavigationParameterKey.CanNavigateId, out var id))
                 {
-                    cts.Cancel();
+                    parameters.TryGetValue<Func<Task<bool>>>(id, out canNavigate);
                 }
+            }
+
+            if (canNavigate != null)
+            {
+                result = await canNavigate();
+            }
+
+            if (!result && parameters.TryGetValue<CancellationTokenSource>(NavigationParameterKey.CancellationTokenSource, out var cts))
+            {
+                cts.Cancel();
             }
 
             if (result)
@@ -72,16 +77,6 @@ namespace Prism.NavigationEx
             }
 
             return result;
-        }
-
-        public virtual Task<bool> CanNavigateAtNewAsync()
-        {
-            return Task.FromResult(true);
-        }
-
-        public virtual Task<bool> CanNavigateAtBackAsync()
-        {
-            return Task.FromResult(true);
         }
     }
 

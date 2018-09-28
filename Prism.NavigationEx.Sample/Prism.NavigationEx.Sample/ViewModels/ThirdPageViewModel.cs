@@ -6,7 +6,7 @@ using Prism.Services;
 
 namespace Prism.NavigationEx.Sample.ViewModels
 {
-    public class ThirdPageViewModel : ConfirmNavigationViewModel<string, string, bool>
+    public class ThirdPageViewModel : NavigationViewModel<string, string>
     {
         public ReactivePropertySlim<string> Text { get; } = new ReactivePropertySlim<string>();
         public AsyncReactiveCommand OkCommand { get; } = new AsyncReactiveCommand();
@@ -19,23 +19,14 @@ namespace Prism.NavigationEx.Sample.ViewModels
         {
             _pageDialogService = pageDialogService;
 
-            OkCommand.Subscribe(async () => await this.GoBackWithConfirmAsync(Text.Value, false));
-            CancelCommand.Subscribe(async () => await this.GoBackWithConfirmAsync(false));
-            GoBackToMainPageCommand.Subscribe(async () => await this.GoBackToRootWithConfirmAsync(Text.Value, true));
+            OkCommand.Subscribe(async () => await NavigationService.GoBackAsync(this, Text.Value, canNavigate: () => pageDialogService.DisplayAlertAsync("Are you sure?", Text.Value, "Yes", "No")));
+            CancelCommand.Subscribe(async () => await NavigationService.GoBackAsync());
+            GoBackToMainPageCommand.Subscribe(async () => await NavigationService.GoBackToRootAsync());
         }
 
         public override void Prepare(string parameter)
         {
             Text.Value = parameter;
-        }
-
-        public override Task<bool> CanNavigateAtBackAsync(bool parameter)
-        {
-            if (parameter)
-            {
-                return _pageDialogService.DisplayAlertAsync("Are you sure?", null, "Yes", "No");
-            }
-            return Task.FromResult(true);
         }
     }
 }

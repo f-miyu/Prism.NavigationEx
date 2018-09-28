@@ -7,6 +7,7 @@
         <Entry Text="{Binding Text.Value}"/>
         <Button Text="OK" Command="{Binding OkCommand}" HorizontalOptions="Center" />
         <Button Text="Cancel" Command="{Binding CancelCommand}" HorizontalOptions="Center"/>
-        <Button Text="Go to Second Page" Command="{Binding GoToThirdPageCommand}" HorizontalOptions="Center"/>
+        <Button Text="Go to Third Page" Command="{Binding GoToThirdPageCommand}" HorizontalOptions="Center"/>
+        <Button Text="Replace to Third Page" Command="{Binding ReplaceToThirdPageCommand}" HorizontalOptions="Center"/>
     </StackLayout>
 </ContentPage>

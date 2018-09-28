@@ -3,6 +3,7 @@ using Prism.Mvvm;
 using Prism.Navigation;
 using Reactive.Bindings;
 using System;
+using System.Threading.Tasks;
 
 namespace Prism.NavigationEx.Sample.ViewModels
 {
@@ -16,7 +17,7 @@ namespace Prism.NavigationEx.Sample.ViewModels
         {
             GoToSecondPpageCommand.Subscribe(async () =>
             {
-                var result = await this.NavigateAsync<SecondPageViewModel, string>();
+                var result = await NavigationService.NavigateAsync<SecondPageViewModel, string>();
                 if (result.Success)
                 {
                     Text.Value = result.Data;
@@ -25,7 +26,7 @@ namespace Prism.NavigationEx.Sample.ViewModels
 
             GoToThirdPageCommand.Subscribe(async () =>
             {
-                var navigation = NavigationPath.Create<SecondPageViewModel, string>((viewModel, thirdPageResult) =>
+                var navigationPath = NavigationPath.Create<SecondPageViewModel, string>((viewModel, thirdPageResult) =>
                 {
                     if (thirdPageResult.Success)
                     {
@@ -33,7 +34,7 @@ namespace Prism.NavigationEx.Sample.ViewModels
                     }
                 }).Add<ThirdPageViewModel, string>(Text.Value);
 
-                var result = await NavigationService.NavigateAsync<SecondPageViewModel, string>(navigation);
+                var result = await NavigationService.NavigateAsync<SecondPageViewModel, string>(navigationPath);
                 if (result.Success)
                 {
                     Text.Value = result.Data;

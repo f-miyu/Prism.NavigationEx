@@ -9,7 +9,6 @@
     <Import_RootNamespace>Prism.NavigationEx</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)ContainerRegistryExtensions.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
     <Compile Include="$(MSBuildThisFileDirectory)INavigationResult.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
     <Compile Include="$(MSBuildThisFileDirectory)NavigationNameProvider.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
     <Compile Include="$(MSBuildThisFileDirectory)NavigationResult.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
@@ -20,11 +19,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)INavigationViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NavigationViewModelExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NavigationParameterKey.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ConfirmNavigationViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)IConfirmNavigationViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ConfirmNavigationViewModelExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ReceivableNavigation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NavigationPath.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)INavigationPath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContainerRegistryExtensions.cs" />
   </ItemGroup>
 </Project>

@@ -12,25 +12,26 @@ namespace Prism.NavigationEx.Sample.ViewModels
         public AsyncReactiveCommand OkCommand { get; } = new AsyncReactiveCommand();
         public AsyncReactiveCommand CancelCommand { get; } = new AsyncReactiveCommand();
         public AsyncReactiveCommand GoToThirdPageCommand { get; } = new AsyncReactiveCommand();
+        public AsyncReactiveCommand ReplaceToThirdPageCommand { get; } = new AsyncReactiveCommand();
 
         public SecondPageViewModel(INavigationService navigationService) : base(navigationService)
         {
-            OkCommand.Subscribe(() => this.GoBackAsync(Text.Value));
-            CancelCommand.Subscribe(() => this.GoBackAsync());
+            OkCommand.Subscribe(() => NavigationService.GoBackAsync(this, Text.Value));
+            CancelCommand.Subscribe(() => NavigationService.GoBackAsync());
 
             GoToThirdPageCommand.Subscribe(async () =>
             {
-                var result = await this.NavigateAsync<ThirdPageViewModel, string, string>(Text.Value);
+                var result = await NavigationService.NavigateAsync<ThirdPageViewModel, string, string>(Text.Value);
                 if (result.Success)
                 {
                     Text.Value = result.Data;
                 }
             });
-        }
 
-        public override Task<bool> CanNavigateAtNewAsync()
-        {
-            return base.CanNavigateAtNewAsync();
+            ReplaceToThirdPageCommand.Subscribe(async () =>
+            {
+                await NavigationService.NavigateAsync<ThirdPageViewModel, string>(Text.Value, replaced: true, animated: false);
+            });
         }
     }
 }

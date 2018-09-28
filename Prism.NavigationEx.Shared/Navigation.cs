@@ -11,15 +11,30 @@ namespace Prism.NavigationEx
     public class Navigation<TViewModel> : INavigation where TViewModel : INavigationViewModel
     {
         public INavigation NextNavigation { get; set; }
+        public Func<Task<bool>> CanNavigate { get; set; }
 
         public virtual string CreateNavigationPath(INavigationParameters parameters, IDictionary<string, string> pathParameters = null, IDictionary<string, string> nextPathParameters = null)
         {
             if (parameters == null)
-                throw new ArgumentNullException(nameof(parameters));
+            {
+                parameters = new NavigationParameters();
+            }
+
+            if (pathParameters == null)
+            {
+                pathParameters = new Dictionary<string, string>();
+            }
+
+            if (CanNavigate != null)
+            {
+                var canNavigateId = Guid.NewGuid().ToString();
+                pathParameters[NavigationParameterKey.CanNavigateId] = canNavigateId;
+                parameters.Add(canNavigateId, CanNavigate);
+            }
 
             var path = NavigationNameProvider.GetNavigationName(typeof(TViewModel));
 
-            if (pathParameters != null && pathParameters.Count > 0)
+            if (pathParameters.Count > 0)
             {
                 path += "?" + string.Join("&", pathParameters.Select(pair => $"{pair.Key}={pair.Value}"));
             }
@@ -35,17 +50,14 @@ namespace Prism.NavigationEx
 
     public class Navigation<TViewModel, TParameter> : Navigation<TViewModel> where TViewModel : INavigationViewModel<TParameter>
     {
-        protected TParameter Parameter { get; private set; }
-
-        public Navigation(TParameter parameter)
-        {
-            Parameter = parameter;
-        }
+        public TParameter Parameter { get; set; }
 
         public override string CreateNavigationPath(INavigationParameters parameters, IDictionary<string, string> pathParameters = null, IDictionary<string, string> nextPathParameters = null)
         {
             if (parameters == null)
-                throw new ArgumentNullException(nameof(parameters));
+            {
+                parameters = new NavigationParameters();
+            }
 
             if (pathParameters == null)
             {

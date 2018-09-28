@@ -9,5 +9,7 @@ namespace Prism.NavigationEx
         public static readonly string CancellationTokenSource = "cancellationTokenSource";
         public static readonly string Result = "result";
         public static readonly string ReceiveResultId = "receiveResultId";
+        public static readonly string CanNavigateId = "canNavigateId";
+        public static readonly string CanNavigate = "canNavigate";
     }
 }
