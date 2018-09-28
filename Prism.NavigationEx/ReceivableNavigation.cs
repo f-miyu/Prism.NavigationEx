@@ -26,7 +26,7 @@ namespace Prism.NavigationEx
             }
         }
 
-        public override string CreateNavigationPath(INavigationParameters parameters, IDictionary<string, string> pathParameters = null, IDictionary<string, string> nextPathParameters = null)
+        public override string CreateNavigationPath(NavigationParameters parameters, IDictionary<string, string> pathParameters = null, IDictionary<string, string> nextPathParameters = null)
         {
             if (parameters == null)
             {
@@ -69,7 +69,7 @@ namespace Prism.NavigationEx
     {
         public TParameter Parameter { get; set; }
 
-        public override string CreateNavigationPath(INavigationParameters parameters, IDictionary<string, string> pathParameters = null, IDictionary<string, string> nextPathParameters = null)
+        public override string CreateNavigationPath(NavigationParameters parameters, IDictionary<string, string> pathParameters = null, IDictionary<string, string> nextPathParameters = null)
         {
             if (parameters == null)
             {

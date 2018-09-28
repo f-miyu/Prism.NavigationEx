@@ -19,19 +19,19 @@ namespace Prism.NavigationEx
             NavigationService = navigationService;
         }
 
-        public virtual void OnNavigatedFrom(INavigationParameters parameters)
+        public virtual void OnNavigatedFrom(NavigationParameters parameters)
         {
         }
 
-        public virtual void OnNavigatingFrom(INavigationParameters parameters)
+        public virtual void OnNavigatingFrom(NavigationParameters parameters)
         {
         }
 
-        public virtual void OnNavigatedTo(INavigationParameters parameters)
+        public virtual void OnNavigatedTo(NavigationParameters parameters)
         {
         }
 
-        public virtual void OnNavigatingTo(INavigationParameters parameters)
+        public virtual void OnNavigatingTo(NavigationParameters parameters)
         {
             if (parameters.GetNavigationMode() == NavigationMode.New && parameters.TryGetValue<string>(NavigationParameterKey.ReceiveResultId, out var id))
             {
@@ -48,7 +48,7 @@ namespace Prism.NavigationEx
         {
         }
 
-        public virtual async Task<bool> CanNavigateAsync(INavigationParameters parameters)
+        public virtual async Task<bool> CanNavigateAsync(NavigationParameters parameters)
         {
             var result = true;
             Func<Task<bool>> canNavigate = null;
@@ -86,7 +86,7 @@ namespace Prism.NavigationEx
         {
         }
 
-        public override void OnNavigatingTo(INavigationParameters parameters)
+        public override void OnNavigatingTo(NavigationParameters parameters)
         {
             base.OnNavigatingTo(parameters);
 
@@ -104,7 +104,7 @@ namespace Prism.NavigationEx
         {
         }
 
-        public override void OnNavigatingTo(INavigationParameters parameters)
+        public override void OnNavigatingTo(NavigationParameters parameters)
         {
             base.OnNavigatingTo(parameters);
 
@@ -117,7 +117,7 @@ namespace Prism.NavigationEx
             }
         }
 
-        public override void OnNavigatingFrom(INavigationParameters parameters)
+        public override void OnNavigatingFrom(NavigationParameters parameters)
         {
             base.OnNavigatingFrom(parameters);
 
@@ -148,7 +148,7 @@ namespace Prism.NavigationEx
         {
         }
 
-        public override void OnNavigatingTo(INavigationParameters parameters)
+        public override void OnNavigatingTo(NavigationParameters parameters)
         {
             base.OnNavigatingTo(parameters);
 

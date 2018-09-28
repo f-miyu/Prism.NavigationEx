@@ -118,7 +118,7 @@ namespace Prism.NavigationEx
             return new NavigationPath<TRootViewModel, TResult>(this);
         }
 
-        public (string Path, INavigationParameters Parameters) GetPathAndParameters(INavigationParameters additionalParameters = null, IDictionary<string, string> additionalPathParameters = null)
+        public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, IDictionary<string, string> additionalPathParameters = null)
         {
             var parameters = new NavigationParameters();
             if (additionalParameters != null)
@@ -164,7 +164,7 @@ namespace Prism.NavigationEx
             return _navigationPath.Add<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate);
         }
 
-        public (string Path, INavigationParameters Parameters) GetPathAndParameters(INavigationParameters additionalParameters = null, IDictionary<string, string> additionalPathParameters = null)
+        public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, IDictionary<string, string> additionalPathParameters = null)
         {
             return _navigationPath.GetPathAndParameters(additionalParameters, additionalPathParameters);
         }

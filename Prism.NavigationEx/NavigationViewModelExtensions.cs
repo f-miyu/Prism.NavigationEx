@@ -6,7 +6,7 @@ namespace Prism.NavigationEx
 {
     public static class NavigationViewModelExtensions
     {
-        internal static void PrepareIfNeeded<TParameter>(this INavigationViewModel<TParameter> self, INavigationParameters parameters)
+        internal static void PrepareIfNeeded<TParameter>(this INavigationViewModel<TParameter> self, NavigationParameters parameters)
         {
             if (parameters.GetNavigationMode() == NavigationMode.New)
             {

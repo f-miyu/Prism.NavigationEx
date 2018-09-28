@@ -6,7 +6,7 @@ namespace Prism.NavigationEx
 {
     public interface INavigationViewModel : INavigationAware, IDestructible, IConfirmNavigationAsync
     {
-        void OnNavigatingFrom(INavigationParameters parameters);
+        void OnNavigatingFrom(NavigationParameters parameters);
     }
 
     public interface INavigationViewModel<TParameter> : INavigationViewModel

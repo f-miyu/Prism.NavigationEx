@@ -7,7 +7,7 @@ namespace Prism.NavigationEx
 {
     public interface INavigationPathBase<TRootViewModel> where TRootViewModel : INavigationViewModel
     {
-        (string Path, INavigationParameters Parameters) GetPathAndParameters(INavigationParameters additionalParameters = null, IDictionary<string, string> additionalPathParameters = null);
+        (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, IDictionary<string, string> additionalPathParameters = null);
     }
 
     public interface INavigationPath<TRootViewModel> : INavigationPathBase<TRootViewModel> where TRootViewModel : INavigationViewModel
