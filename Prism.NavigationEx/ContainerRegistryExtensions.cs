@@ -10,12 +10,7 @@ namespace Prism.NavigationEx
     {
         public static void RegisterForNavigation(this IContainerRegistry containerRegistry, Assembly assembly)
         {
-            var types = assembly.GetTypes();
-
-            if (types == null)
-                return;
-
-            var viewTypes = types.Where(t => !t.IsAbstract && t.IsSubclassOf(typeof(Page)));
+            var viewTypes = assembly.DefinedTypes.Where(t => !t.IsAbstract && t.IsSubclassOf(typeof(Page))).Select(t => t.AsType());
 
             foreach (var viewType in viewTypes)
             {
@@ -39,14 +34,14 @@ namespace Prism.NavigationEx
 
         public static void RegisterForNavigation(this IContainerRegistry containerRegistry, Application application)
         {
-            var assembly = application.GetType().Assembly;
+            var assembly = application.GetType().GetTypeInfo().Assembly;
             containerRegistry.RegisterForNavigation(assembly);
         }
 
         public static void RegisterForNavigation<TNavigationPage>(this IContainerRegistry containerRegistry, Application application)
             where TNavigationPage : NavigationPage
         {
-            var assembly = application.GetType().Assembly;
+            var assembly = application.GetType().GetTypeInfo().Assembly;
             containerRegistry.RegisterForNavigation<TNavigationPage>(assembly);
         }
     }

@@ -1,11 +1,9 @@
 ﻿using System;
 using Prism.Navigation;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Threading;
-using System.Data.SqlTypes;
+
 namespace Prism.NavigationEx
 {
     public class Navigation<TViewModel> : INavigation where TViewModel : INavigationViewModel

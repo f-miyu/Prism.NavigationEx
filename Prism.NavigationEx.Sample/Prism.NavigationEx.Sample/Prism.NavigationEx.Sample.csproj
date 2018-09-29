@@ -8,13 +8,13 @@
     <PackageReference Include="Prism.DryIoc.Forms" Version="7.0.0.396" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Prism.NavigationEx\Prism.NavigationEx.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="ViewModels\ConfirmnNavigationViewModelResult.cs" />
     <Compile Remove="Views\View.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Views\View.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Prism.NavigationEx\Prism.NavigationEx.csproj" />
   </ItemGroup>
 </Project>

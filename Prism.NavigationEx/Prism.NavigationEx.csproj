@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard1.0;netstandard2.0</TargetFrameworks>
     <PackageVersion>1.0.0</PackageVersion>
     <Authors>f-miyu</Authors>
     <PackageLicenseUrl>https://github.com/f-miyu/Prism.NavigationEx/blob/master/LICENSE</PackageLicenseUrl>
@@ -18,5 +18,6 @@
   <ItemGroup>
     <PackageReference Include="Prism.Forms" Version="[7.0.0.396]" />
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.2" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 </Project>

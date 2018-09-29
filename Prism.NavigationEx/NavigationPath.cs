@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Prism.Navigation;
-using System.Linq;
 
 namespace Prism.NavigationEx
 {
