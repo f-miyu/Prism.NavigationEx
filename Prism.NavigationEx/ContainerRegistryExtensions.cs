@@ -10,6 +10,9 @@ namespace Prism.NavigationEx
     {
         public static void RegisterForNavigation(this IContainerRegistry containerRegistry, Assembly assembly)
         {
+            if (assembly == null)
+                throw new ArgumentNullException(nameof(assembly));
+
             var viewTypes = assembly.DefinedTypes.Where(t => !t.IsAbstract && t.IsSubclassOf(typeof(Page))).Select(t => t.AsType());
 
             foreach (var viewType in viewTypes)
@@ -17,32 +20,17 @@ namespace Prism.NavigationEx
                 var name = viewType.Name;
                 containerRegistry.RegisterForNavigation(viewType, name);
             }
-        }
 
-        public static void RegisterForNavigation<TNavigationPage>(this IContainerRegistry containerRegistry, Assembly assembly)
-            where TNavigationPage : NavigationPage
-        {
-            containerRegistry.RegisterForNavigation(assembly);
-
-            var navigationPageType = typeof(TNavigationPage);
-            var navigationPageName = navigationPageType.Name;
-
-            containerRegistry.RegisterForNavigation(navigationPageType, navigationPageName);
-
-            NavigationNameProvider.SetDefaultViewModelTypeToNavigationPageNameResolver(_ => navigationPageName);
+            containerRegistry.RegisterForNavigation<NavigationPage>();
         }
 
         public static void RegisterForNavigation(this IContainerRegistry containerRegistry, Application application)
         {
+            if (application == null)
+                throw new ArgumentNullException(nameof(application));
+
             var assembly = application.GetType().GetTypeInfo().Assembly;
             containerRegistry.RegisterForNavigation(assembly);
-        }
-
-        public static void RegisterForNavigation<TNavigationPage>(this IContainerRegistry containerRegistry, Application application)
-            where TNavigationPage : NavigationPage
-        {
-            var assembly = application.GetType().GetTypeInfo().Assembly;
-            containerRegistry.RegisterForNavigation<TNavigationPage>(assembly);
         }
     }
 }

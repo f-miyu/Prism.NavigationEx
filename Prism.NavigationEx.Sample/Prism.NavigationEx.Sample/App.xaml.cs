@@ -29,7 +29,7 @@ namespace Prism.NavigationEx.Sample
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<NavigationPage>(this);
+            containerRegistry.RegisterForNavigation(this);
         }
     }
 }
