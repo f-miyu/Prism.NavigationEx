@@ -18,27 +18,16 @@ namespace Prism.NavigationEx
                 return name;
             };
 
-        private static Func<Type, string> _defaultViewModelTypeToNavigationPageNameResolver =
-            viewModelType => "NavigationPage";
+        public static string DefaultNavigationPageName { get; set; } = nameof(NavigationPage);
 
         public static string GetNavigationName(Type viewModelType)
         {
             return _defaultViewModelTypeToNavigationNameResolver(viewModelType);
         }
 
-        public static string GetNavigationPageName(Type viewModelType)
-        {
-            return _defaultViewModelTypeToNavigationPageNameResolver(viewModelType);
-        }
-
         public static void SetDefaultViewModelTypeToNavigationNameResolver(Func<Type, string> viewModelTypeToNavigationNameResolver)
         {
             _defaultViewModelTypeToNavigationNameResolver = viewModelTypeToNavigationNameResolver;
-        }
-
-        public static void SetDefaultViewModelTypeToNavigationPageNameResolver(Func<Type, string> viewModelTypeToNavigationPageNameResolver)
-        {
-            _defaultViewModelTypeToNavigationPageNameResolver = viewModelTypeToNavigationPageNameResolver;
         }
     }
 }

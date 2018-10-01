@@ -86,7 +86,7 @@ namespace Prism.NavigationEx
 
             if (wrapInNavigationPage)
             {
-                path = NavigationNameProvider.GetNavigationPageName(typeof(TViewModel)) + "/" + path;
+                path = NavigationNameProvider.DefaultNavigationPageName + "/" + path;
             }
 
             if (replaced)
@@ -134,7 +134,7 @@ namespace Prism.NavigationEx
 
                     if (wrapInNavigationPage)
                     {
-                        path = NavigationNameProvider.GetNavigationPageName(typeof(TViewModel)) + "/" + path;
+                        path = NavigationNameProvider.DefaultNavigationPageName + "/" + path;
                     }
 
                     if (noHistory)
