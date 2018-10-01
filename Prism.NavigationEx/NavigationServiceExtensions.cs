@@ -9,16 +9,78 @@ namespace Prism.NavigationEx
 {
     public static class NavigationServiceExtensions
     {
-        public static Task NavigateAsync<TViewModel>(this INavigationService navigationService, INavigationPath<TViewModel> navigationPath, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false)
-            where TViewModel : INavigationViewModel
+        public static Task NavigateAsync(this INavigationService navigationService, INavigationPathBase navigationPath, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false)
         {
-            return navigationService.NavigateAsync<TViewModel>(navigationPath, null, useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced);
+            if (navigationPath == null)
+                throw new ArgumentNullException(nameof(navigationPath));
+
+            var (path, parameters) = navigationPath.GetPathAndParameters();
+
+            if (wrapInNavigationPage)
+            {
+                path = NavigationNameProvider.DefaultNavigationPageName + "/" + path;
+            }
+
+            if (replaced)
+            {
+                path = "../" + path;
+            }
+
+            if (noHistory)
+            {
+                path = "/" + path;
+            }
+
+            return navigationService.NavigateAsync(path, parameters, useModalNavigation, animated);
         }
 
-        public static Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TResult>(this INavigationService navigationService, INavigationPath<TViewModel> navigationPath, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
+        public static async Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TResult>(this INavigationService navigationService, INavigationPathBase<TViewModel> navigationPath, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
             where TViewModel : INavigationViewModelResult<TResult>
         {
-            return navigationService.NavigateAsync<TViewModel, TResult>(navigationPath, null, useModalNavigation, animated, wrapInNavigationPage, noHistory);
+            if (navigationPath == null)
+                throw new ArgumentNullException(nameof(navigationPath));
+
+            var tcs = new TaskCompletionSource<TResult>();
+            var cts = new CancellationTokenSource();
+
+            var cancellationToken = cts.Token;
+
+            using (cancellationToken.Register(() => tcs.TrySetCanceled()))
+            {
+                try
+                {
+                    var taskCompletionSourceId = Guid.NewGuid().ToString();
+                    var additionalPathParameters = new Dictionary<string, string>
+                    {
+                        [NavigationParameterKey.TaskCompletionSourceId] = taskCompletionSourceId
+                    };
+
+                    var additionalParameters = new NavigationParameters();
+                    additionalParameters.Add(taskCompletionSourceId, tcs);
+                    additionalParameters.Add(NavigationParameterKey.CancellationTokenSource, cts);
+
+                    var (path, parameters) = navigationPath.GetPathAndParameters(additionalParameters, additionalPathParameters);
+
+                    if (wrapInNavigationPage)
+                    {
+                        path = NavigationNameProvider.DefaultNavigationPageName + "/" + path;
+                    }
+
+                    if (noHistory)
+                    {
+                        path = "/" + path;
+                    }
+
+                    await navigationService.NavigateAsync(path, parameters, useModalNavigation, animated).ConfigureAwait(false);
+
+                    var result = await tcs.Task.ConfigureAwait(false);
+                    return new NavigationResult<TResult>(true, result);
+                }
+                catch (Exception e)
+                {
+                    return new NavigationResult<TResult>(false, default(TResult), e);
+                }
+            }
         }
 
         public static Task NavigateAsync<TViewModel>(this INavigationService navigationService, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false, Func<Task<bool>> canNavigate = null)
@@ -74,84 +136,6 @@ namespace Prism.NavigationEx
             };
 
             return navigationService.GoBackToRootAsync(parameters);
-        }
-
-        private static Task NavigateAsync<TViewModel>(this INavigationService navigationService, INavigationPathBase<TViewModel> navigationPath, NavigationParameters additionalParameters, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false)
-            where TViewModel : INavigationViewModel
-        {
-            if (navigationPath == null)
-                throw new ArgumentNullException(nameof(navigationPath));
-
-            var (path, parameters) = navigationPath.GetPathAndParameters(additionalParameters);
-
-            if (wrapInNavigationPage)
-            {
-                path = NavigationNameProvider.DefaultNavigationPageName + "/" + path;
-            }
-
-            if (replaced)
-            {
-                path = "../" + path;
-            }
-
-            if (noHistory)
-            {
-                path = "/" + path;
-            }
-
-            return navigationService.NavigateAsync(path, parameters, useModalNavigation, animated);
-        }
-
-        private static async Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TResult>(this INavigationService navigationService, INavigationPathBase<TViewModel> navigationPath, NavigationParameters additionalParameters, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
-            where TViewModel : INavigationViewModelResult<TResult>
-        {
-            if (navigationPath == null)
-                throw new ArgumentNullException(nameof(navigationPath));
-
-            var tcs = new TaskCompletionSource<TResult>();
-            var cts = new CancellationTokenSource();
-
-            var cancellationToken = cts.Token;
-
-            using (cancellationToken.Register(() => tcs.TrySetCanceled()))
-            {
-                try
-                {
-                    var taskCompletionSourceId = Guid.NewGuid().ToString();
-                    var additionalPathParameters = new Dictionary<string, string>
-                    {
-                        [NavigationParameterKey.TaskCompletionSourceId] = taskCompletionSourceId
-                    };
-
-                    if (additionalParameters == null)
-                    {
-                        additionalParameters = new NavigationParameters();
-                    }
-                    additionalParameters.Add(taskCompletionSourceId, tcs);
-                    additionalParameters.Add(NavigationParameterKey.CancellationTokenSource, cts);
-
-                    var (path, parameters) = navigationPath.GetPathAndParameters(additionalParameters, additionalPathParameters);
-
-                    if (wrapInNavigationPage)
-                    {
-                        path = NavigationNameProvider.DefaultNavigationPageName + "/" + path;
-                    }
-
-                    if (noHistory)
-                    {
-                        path = "/" + path;
-                    }
-
-                    await navigationService.NavigateAsync(path, parameters, useModalNavigation, animated).ConfigureAwait(false);
-
-                    var result = await tcs.Task.ConfigureAwait(false);
-                    return new NavigationResult<TResult>(true, result);
-                }
-                catch (Exception e)
-                {
-                    return new NavigationResult<TResult>(false, default(TResult), e);
-                }
-            }
         }
     }
 }

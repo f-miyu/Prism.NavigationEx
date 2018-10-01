@@ -6,6 +6,17 @@ using System.Threading.Tasks;
 
 namespace Prism.NavigationEx
 {
+    public class Navigation : INavigation
+    {
+        public INavigation NextNavigation { get; set; }
+        public string Path { get; set; }
+
+        public string CreateNavigationPath(NavigationParameters parameters, IDictionary<string, string> pathParameters = null, IDictionary<string, string> nextPathParameters = null)
+        {
+            return Path ?? string.Empty;
+        }
+    }
+
     public class Navigation<TViewModel> : INavigation where TViewModel : INavigationViewModel
     {
         public INavigation NextNavigation { get; set; }

@@ -28,17 +28,17 @@ namespace Prism.NavigationEx
             return new NavigationPath<TViewModel>(navigation);
         }
 
-        public static INavigationPath<TViewModel, TResult> Create<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
+        public static INavigationPathResult<TViewModel, TResult> Create<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
         {
             var navigation = new ReceivableNavigation<TViewModel, TResult>
             {
                 ResultReceived = resultReceived,
                 CanNavigate = canNavigate
             };
-            return new NavigationPath<TViewModel, TResult>(new NavigationPath<TViewModel>(navigation));
+            return new NavigationPathResult<TViewModel, TResult>(new NavigationPath<TViewModel>(navigation));
         }
 
-        public static INavigationPath<TViewModel, TResult> Create<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
+        public static INavigationPathResult<TViewModel, TResult> Create<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
         {
             var navigation = new ReceivableNavigation<TViewModel, TParameter, TResult>
             {
@@ -46,7 +46,7 @@ namespace Prism.NavigationEx
                 ResultReceived = resultReceived,
                 CanNavigate = canNavigate
             };
-            return new NavigationPath<TViewModel, TResult>(new NavigationPath<TViewModel>(navigation));
+            return new NavigationPathResult<TViewModel, TResult>(new NavigationPath<TViewModel>(navigation));
         }
     }
 
@@ -59,6 +59,19 @@ namespace Prism.NavigationEx
         {
             _rootNavigation = navigation;
             _lastNavigation = navigation;
+        }
+
+        public INavigationPath<TRootViewModel> Add(string path)
+        {
+            var navigation = new Navigation
+            {
+                Path = path
+            };
+
+            _lastNavigation.NextNavigation = navigation;
+            _lastNavigation = navigation;
+
+            return this;
         }
 
         public INavigationPath<TRootViewModel> Add<TViewModel>(Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
@@ -88,7 +101,7 @@ namespace Prism.NavigationEx
             return this;
         }
 
-        public INavigationPath<TRootViewModel, TResult> Add<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
+        public INavigationPathResult<TRootViewModel, TResult> Add<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
         {
             var navigation = new ReceivableNavigation<TViewModel, TResult>
             {
@@ -99,10 +112,10 @@ namespace Prism.NavigationEx
             _lastNavigation.NextNavigation = navigation;
             _lastNavigation = navigation;
 
-            return new NavigationPath<TRootViewModel, TResult>(this);
+            return new NavigationPathResult<TRootViewModel, TResult>(this);
         }
 
-        public INavigationPath<TRootViewModel, TResult> Add<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
+        public INavigationPathResult<TRootViewModel, TResult> Add<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
         {
             var navigation = new ReceivableNavigation<TViewModel, TParameter, TResult>
             {
@@ -114,7 +127,7 @@ namespace Prism.NavigationEx
             _lastNavigation.NextNavigation = navigation;
             _lastNavigation = navigation;
 
-            return new NavigationPath<TRootViewModel, TResult>(this);
+            return new NavigationPathResult<TRootViewModel, TResult>(this);
         }
 
         public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, IDictionary<string, string> additionalPathParameters = null)
@@ -134,11 +147,11 @@ namespace Prism.NavigationEx
         }
     }
 
-    public class NavigationPath<TRootViewModel, TReceivedResult> : INavigationPath<TRootViewModel, TReceivedResult> where TRootViewModel : INavigationViewModel
+    public class NavigationPathResult<TRootViewModel, TReceivedResult> : INavigationPathResult<TRootViewModel, TReceivedResult> where TRootViewModel : INavigationViewModel
     {
         private readonly INavigationPath<TRootViewModel> _navigationPath;
 
-        public NavigationPath(INavigationPath<TRootViewModel> navigationPath)
+        public NavigationPathResult(INavigationPath<TRootViewModel> navigationPath)
         {
             _navigationPath = navigationPath;
         }
@@ -153,12 +166,12 @@ namespace Prism.NavigationEx
             return _navigationPath.Add<TViewModel, TParameter>(parameter, canNavigate);
         }
 
-        public INavigationPath<TRootViewModel, TResult> Add<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModelResult<TReceivedResult>
+        public INavigationPathResult<TRootViewModel, TResult> Add<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModelResult<TReceivedResult>
         {
             return _navigationPath.Add<TViewModel, TResult>(resultReceived, canNavigate);
         }
 
-        public INavigationPath<TRootViewModel, TResult> Add<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter, TReceivedResult>
+        public INavigationPathResult<TRootViewModel, TResult> Add<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter, TReceivedResult>
         {
             return _navigationPath.Add<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate);
         }
