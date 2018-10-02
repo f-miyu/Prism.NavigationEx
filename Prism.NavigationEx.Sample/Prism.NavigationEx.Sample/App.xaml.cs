@@ -30,6 +30,7 @@ namespace Prism.NavigationEx.Sample
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation(this);
+            containerRegistry.RegisterForNavigation<TabbedPage>();
         }
     }
 }

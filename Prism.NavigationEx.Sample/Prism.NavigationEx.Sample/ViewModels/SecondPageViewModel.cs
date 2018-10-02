@@ -33,5 +33,15 @@ namespace Prism.NavigationEx.Sample.ViewModels
                 await NavigationService.NavigateAsync<ThirdPageViewModel, string>(Text.Value, replaced: true, animated: false);
             });
         }
+
+        public override void OnNavigatingTo(NavigationParameters parameters)
+        {
+            base.OnNavigatingTo(parameters);
+        }
+
+        public override void OnNavigatedTo(NavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+        }
     }
 }

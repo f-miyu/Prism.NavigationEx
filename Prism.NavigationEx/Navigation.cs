@@ -9,20 +9,37 @@ namespace Prism.NavigationEx
     public class Navigation : INavigation
     {
         public INavigation NextNavigation { get; set; }
-        public string Path { get; set; }
+        public string Path { get; }
 
-        public string CreateNavigationPath(NavigationParameters parameters, IDictionary<string, string> pathParameters = null, IDictionary<string, string> nextPathParameters = null)
+        public Navigation(string path)
         {
-            return Path ?? string.Empty;
+            Path = path;
+        }
+
+        public string CreateNavigationPath(NavigationParameters parameters, NavigationParameters pathParameters = null, NavigationParameters nextPathParameters = null)
+        {
+            var path = Path ?? string.Empty;
+
+            if (NextNavigation != null)
+            {
+                path += "/" + NextNavigation.CreateNavigationPath(parameters, nextPathParameters);
+            }
+
+            return path;
         }
     }
 
     public class Navigation<TViewModel> : INavigation where TViewModel : INavigationViewModel
     {
         public INavigation NextNavigation { get; set; }
-        public Func<Task<bool>> CanNavigate { get; set; }
+        public Func<Task<bool>> CanNavigate { get; }
 
-        public virtual string CreateNavigationPath(NavigationParameters parameters, IDictionary<string, string> pathParameters = null, IDictionary<string, string> nextPathParameters = null)
+        public Navigation(Func<Task<bool>> canNavigate)
+        {
+            CanNavigate = canNavigate;
+        }
+
+        public virtual string CreateNavigationPath(NavigationParameters parameters, NavigationParameters pathParameters = null, NavigationParameters nextPathParameters = null)
         {
             if (parameters == null)
             {
@@ -31,13 +48,13 @@ namespace Prism.NavigationEx
 
             if (pathParameters == null)
             {
-                pathParameters = new Dictionary<string, string>();
+                pathParameters = new NavigationParameters();
             }
 
             if (CanNavigate != null)
             {
                 var canNavigateId = Guid.NewGuid().ToString();
-                pathParameters[NavigationParameterKey.CanNavigateId] = canNavigateId;
+                pathParameters.Add(NavigationParameterKey.CanNavigateId, canNavigateId);
                 parameters.Add(canNavigateId, CanNavigate);
             }
 
@@ -59,9 +76,14 @@ namespace Prism.NavigationEx
 
     public class Navigation<TViewModel, TParameter> : Navigation<TViewModel> where TViewModel : INavigationViewModel<TParameter>
     {
-        public TParameter Parameter { get; set; }
+        public TParameter Parameter { get; }
 
-        public override string CreateNavigationPath(NavigationParameters parameters, IDictionary<string, string> pathParameters = null, IDictionary<string, string> nextPathParameters = null)
+        public Navigation(TParameter parameter, Func<Task<bool>> canNavigate) : base(canNavigate)
+        {
+            Parameter = parameter;
+        }
+
+        public override string CreateNavigationPath(NavigationParameters parameters, NavigationParameters pathParameters = null, NavigationParameters nextPathParameters = null)
         {
             if (parameters == null)
             {
@@ -70,11 +92,11 @@ namespace Prism.NavigationEx
 
             if (pathParameters == null)
             {
-                pathParameters = new Dictionary<string, string>();
+                pathParameters = new NavigationParameters();
             }
 
             var parameterId = Guid.NewGuid().ToString();
-            pathParameters[NavigationParameterKey.ParameterId] = parameterId;
+            pathParameters.Add(NavigationParameterKey.ParameterId, parameterId);
             parameters.Add(parameterId, Parameter);
 
             return base.CreateNavigationPath(parameters, pathParameters, nextPathParameters);

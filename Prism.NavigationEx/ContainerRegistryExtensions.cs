@@ -22,6 +22,7 @@ namespace Prism.NavigationEx
             }
 
             containerRegistry.RegisterForNavigation<NavigationPage>();
+            containerRegistry.RegisterForNavigation<TabbedPage>();
         }
 
         public static void RegisterForNavigation(this IContainerRegistry containerRegistry, Application application)
