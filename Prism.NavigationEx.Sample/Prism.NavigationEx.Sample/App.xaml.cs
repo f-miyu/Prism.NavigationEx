@@ -26,7 +26,7 @@ namespace Prism.NavigationEx.Sample
 
             //await NavigationService.NavigateAsync<MainPageViewModel>(wrapInNavigationPage: true);
 
-            await NavigationService.NavigateAsync(NavigationPathFactory.CreateForTabbedPage(1, new TabNavigation<MainPageViewModel>(true), new TabNavigation<SecondPageViewModel>(true), new TabNavigation<SecondPageViewModel>(true)));
+            await NavigationService.NavigateAsync(NavigationUriFactory.CreateForTabbedPage(1, new TabNavigation<MainPageViewModel>(true), new TabNavigation<SecondPageViewModel>(true), new TabNavigation<SecondPageViewModel>(true)));
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)

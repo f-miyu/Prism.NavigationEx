@@ -26,7 +26,7 @@ namespace Prism.NavigationEx.Sample.ViewModels
 
             GoToThirdPageCommand.Subscribe(async () =>
             {
-                var navigationPath = NavigationPathFactory.Create<SecondPageViewModel, string>((viewModel, thirdPageResult) =>
+                var navigationPath = NavigationUriFactory.Create<SecondPageViewModel, string>((viewModel, thirdPageResult) =>
                 {
                     if (thirdPageResult.Success)
                     {

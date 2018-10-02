@@ -5,102 +5,102 @@ using Prism.Navigation;
 
 namespace Prism.NavigationEx
 {
-    public class NavigationPath : INavigationPath
+    public class NavigationUri : INavigationUri
     {
-        private readonly NavigationPathImpl _navigationPathImpl;
+        private readonly NavigationUriImpl _navigationPathImpl;
 
-        public NavigationPath(INavigation navigation)
+        public NavigationUri(INavigation navigation)
         {
-            _navigationPathImpl = new NavigationPathImpl(navigation);
+            _navigationPathImpl = new NavigationUriImpl(navigation);
         }
 
-        public NavigationPath Add(string path)
+        public NavigationUri Add(string path)
         {
             _navigationPathImpl.Add(path);
             return this;
         }
 
-        public NavigationPath Add<TViewModel>(Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
+        public NavigationUri Add<TViewModel>(Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
         {
             _navigationPathImpl.Add<TViewModel>(canNavigate);
             return this;
         }
 
-        public NavigationPath Add<TViewModel, TParameter>(TParameter parameter, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
+        public NavigationUri Add<TViewModel, TParameter>(TParameter parameter, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
         {
             _navigationPathImpl.Add<TViewModel, TParameter>(parameter, canNavigate);
             return this;
         }
 
-        public NavigationPathResult<TResult> Add<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
+        public NavigationUriResult<TResult> Add<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
         {
             _navigationPathImpl.Add<TViewModel, TResult>(resultReceived, canNavigate);
-            return new NavigationPathResult<TResult>(this);
+            return new NavigationUriResult<TResult>(this);
         }
 
-        public NavigationPathResult<TResult> Add<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
+        public NavigationUriResult<TResult> Add<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
         {
             _navigationPathImpl.Add<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate);
-            return new NavigationPathResult<TResult>(this);
+            return new NavigationUriResult<TResult>(this);
         }
 
-        public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalPathParameters = null)
+        public (string Uri, NavigationParameters Parameters) GetUriAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalQueries = null)
         {
-            return _navigationPathImpl.GetPathAndParameters(additionalParameters, additionalPathParameters);
+            return _navigationPathImpl.GetUriAndParameters(additionalParameters, additionalQueries);
         }
     }
 
-    public class NavigationPath<TRootViewModel> : INavigationPath<TRootViewModel> where TRootViewModel : INavigationViewModel
+    public class NavigationUri<TRootViewModel> : INavigationUri<TRootViewModel> where TRootViewModel : INavigationViewModel
     {
-        private readonly NavigationPathImpl _navigationPathImpl;
+        private readonly NavigationUriImpl _navigationPathImpl;
 
-        public NavigationPath(INavigation navigation)
+        public NavigationUri(INavigation navigation)
         {
-            _navigationPathImpl = new NavigationPathImpl(navigation);
+            _navigationPathImpl = new NavigationUriImpl(navigation);
         }
 
-        public NavigationPath<TRootViewModel> Add(string path)
+        public NavigationUri<TRootViewModel> Add(string path)
         {
             _navigationPathImpl.Add(path);
             return this;
         }
 
-        public NavigationPath<TRootViewModel> Add<TViewModel>(Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
+        public NavigationUri<TRootViewModel> Add<TViewModel>(Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
         {
             _navigationPathImpl.Add<TViewModel>(canNavigate);
             return this;
         }
 
-        public NavigationPath<TRootViewModel> Add<TViewModel, TParameter>(TParameter parameter, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
+        public NavigationUri<TRootViewModel> Add<TViewModel, TParameter>(TParameter parameter, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
         {
             _navigationPathImpl.Add<TViewModel, TParameter>(parameter, canNavigate);
             return this;
         }
 
-        public NavigationPathResult<TRootViewModel, TResult> Add<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
+        public NavigationUriResult<TRootViewModel, TResult> Add<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
         {
             _navigationPathImpl.Add<TViewModel, TResult>(resultReceived, canNavigate);
-            return new NavigationPathResult<TRootViewModel, TResult>(this);
+            return new NavigationUriResult<TRootViewModel, TResult>(this);
         }
 
-        public NavigationPathResult<TRootViewModel, TResult> Add<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
+        public NavigationUriResult<TRootViewModel, TResult> Add<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
         {
             _navigationPathImpl.Add<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate);
-            return new NavigationPathResult<TRootViewModel, TResult>(this);
+            return new NavigationUriResult<TRootViewModel, TResult>(this);
         }
 
-        public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalPathParameters = null)
+        public (string Uri, NavigationParameters Parameters) GetUriAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalQueries = null)
         {
-            return _navigationPathImpl.GetPathAndParameters(additionalParameters, additionalPathParameters);
+            return _navigationPathImpl.GetUriAndParameters(additionalParameters, additionalQueries);
         }
     }
 
-    internal class NavigationPathImpl
+    internal class NavigationUriImpl
     {
         private INavigation _rootNavigation;
         private INavigation _lastNavigation;
 
-        public NavigationPathImpl(INavigation navigation)
+        public NavigationUriImpl(INavigation navigation)
         {
             _rootNavigation = navigation;
             _lastNavigation = navigation;
@@ -141,7 +141,7 @@ namespace Prism.NavigationEx
             _lastNavigation = navigation;
         }
 
-        public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalPathParameters = null)
+        public (string Uri, NavigationParameters Parameters) GetUriAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalQueries = null)
         {
             var parameters = new NavigationParameters();
             if (additionalParameters != null)
@@ -152,7 +152,7 @@ namespace Prism.NavigationEx
                 }
             }
 
-            var path = _rootNavigation.CreateNavigationPath(parameters, additionalPathParameters);
+            var path = _rootNavigation.CreateNavigationUri(parameters, additionalQueries);
 
             return (path, parameters);
         }

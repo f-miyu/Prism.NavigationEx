@@ -31,7 +31,7 @@ namespace Prism.NavigationEx
             }
         }
 
-        public override string CreateNavigationPath(NavigationParameters parameters, NavigationParameters pathParameters = null, NavigationParameters nextPathParameters = null)
+        public override string CreateNavigationUri(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
         {
             if (parameters == null)
             {
@@ -40,19 +40,19 @@ namespace Prism.NavigationEx
 
             if (NextNavigation != null)
             {
-                if (pathParameters == null)
+                if (queries == null)
                 {
-                    pathParameters = new NavigationParameters();
+                    queries = new NavigationParameters();
                 }
 
-                if (nextPathParameters == null)
+                if (nextQueries == null)
                 {
-                    nextPathParameters = new NavigationParameters();
+                    nextQueries = new NavigationParameters();
                 }
 
                 Func<INavigationViewModel, Task> receiveResult = ReceiveResultAsync;
                 var receiveResultId = Guid.NewGuid().ToString();
-                pathParameters.Add(NavigationParameterKey.ReceiveResultId, receiveResultId);
+                queries.Add(NavigationParameterKey.ReceiveResultId, receiveResultId);
                 parameters.Add(receiveResultId, receiveResult);
 
                 if (_tcs != null && !_tcs.Task.IsCompleted)
@@ -62,11 +62,11 @@ namespace Prism.NavigationEx
 
                 _tcs = new TaskCompletionSource<TResult>();
                 var taskCompletionSourceId = Guid.NewGuid().ToString();
-                nextPathParameters.Add(NavigationParameterKey.TaskCompletionSourceId, taskCompletionSourceId);
+                nextQueries.Add(NavigationParameterKey.TaskCompletionSourceId, taskCompletionSourceId);
                 parameters.Add(taskCompletionSourceId, _tcs);
             }
 
-            return base.CreateNavigationPath(parameters, pathParameters, nextPathParameters);
+            return base.CreateNavigationUri(parameters, queries, nextQueries);
         }
     }
 
@@ -79,23 +79,23 @@ namespace Prism.NavigationEx
             Parameter = parameter;
         }
 
-        public override string CreateNavigationPath(NavigationParameters parameters, NavigationParameters pathParameters = null, NavigationParameters nextPathParameters = null)
+        public override string CreateNavigationUri(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
         {
             if (parameters == null)
             {
                 parameters = new NavigationParameters();
             }
 
-            if (pathParameters == null)
+            if (queries == null)
             {
-                pathParameters = new NavigationParameters();
+                queries = new NavigationParameters();
             }
 
             var parameterId = Guid.NewGuid().ToString();
-            pathParameters.Add(NavigationParameterKey.ParameterId, parameterId);
+            queries.Add(NavigationParameterKey.ParameterId, parameterId);
             parameters.Add(parameterId, Parameter);
 
-            return base.CreateNavigationPath(parameters, pathParameters, nextPathParameters);
+            return base.CreateNavigationUri(parameters, queries, nextQueries);
         }
     }
 }

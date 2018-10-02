@@ -37,44 +37,44 @@ namespace Prism.NavigationEx
             TabNavigations = tabNavigations;
         }
 
-        public string CreateNavigationPath(NavigationParameters parameters, NavigationParameters pathParameters = null, NavigationParameters nextPathParameters = null)
+        public string CreateNavigationUri(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
         {
             if (parameters == null)
             {
                 parameters = new NavigationParameters();
             }
 
-            if (pathParameters == null)
+            if (queries == null)
             {
-                pathParameters = new NavigationParameters();
+                queries = new NavigationParameters();
             }
 
             if (TabNavigations != null && TabNavigations.Length > 0)
             {
                 foreach (var tabNavigations in TabNavigations)
                 {
-                    pathParameters.Add(KnownNavigationParameters.CreateTab, tabNavigations.CreateTabParameter(parameters));
+                    queries.Add(KnownNavigationParameters.CreateTab, tabNavigations.CreateTabParameter(parameters));
                 }
 
                 if (SelectedIndex >= 0)
                 {
-                    pathParameters.Add(KnownNavigationParameters.SelectedTab, TabNavigations[SelectedIndex].Name);
+                    queries.Add(KnownNavigationParameters.SelectedTab, TabNavigations[SelectedIndex].Name);
                 }
             }
 
-            var path = TabbedPageName;
+            var uri = TabbedPageName;
 
-            if (pathParameters.Count > 0)
+            if (queries.Count > 0)
             {
-                path += "?" + string.Join("&", pathParameters.Select(pair => $"{pair.Key}={pair.Value}"));
+                uri += "?" + string.Join("&", queries.Select(pair => $"{pair.Key}={pair.Value}"));
             }
 
             if (NextNavigation != null)
             {
-                path += "/" + NextNavigation.CreateNavigationPath(parameters, nextPathParameters);
+                uri += "/" + NextNavigation.CreateNavigationUri(parameters, nextQueries);
             }
 
-            return path;
+            return uri;
         }
     }
 

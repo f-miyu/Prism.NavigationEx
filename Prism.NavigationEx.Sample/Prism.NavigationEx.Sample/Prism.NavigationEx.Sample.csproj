@@ -10,7 +10,6 @@
   <ItemGroup>
     <Compile Remove="ViewModels\ConfirmnNavigationViewModelResult.cs" />
     <Compile Remove="Views\View.xaml.cs" />
-    <Compile Remove="ViewModels\FourthPageViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Views\View.xaml" />

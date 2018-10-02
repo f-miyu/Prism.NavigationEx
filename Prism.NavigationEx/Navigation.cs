@@ -9,23 +9,23 @@ namespace Prism.NavigationEx
     public class Navigation : INavigation
     {
         public INavigation NextNavigation { get; set; }
-        public string Path { get; }
+        public string Uri { get; }
 
-        public Navigation(string path)
+        public Navigation(string uri)
         {
-            Path = path;
+            Uri = uri;
         }
 
-        public string CreateNavigationPath(NavigationParameters parameters, NavigationParameters pathParameters = null, NavigationParameters nextPathParameters = null)
+        public string CreateNavigationUri(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
         {
-            var path = Path ?? string.Empty;
+            var uri = Uri ?? string.Empty;
 
             if (NextNavigation != null)
             {
-                path += "/" + NextNavigation.CreateNavigationPath(parameters, nextPathParameters);
+                uri += "/" + NextNavigation.CreateNavigationUri(parameters, nextQueries);
             }
 
-            return path;
+            return uri;
         }
     }
 
@@ -39,38 +39,38 @@ namespace Prism.NavigationEx
             CanNavigate = canNavigate;
         }
 
-        public virtual string CreateNavigationPath(NavigationParameters parameters, NavigationParameters pathParameters = null, NavigationParameters nextPathParameters = null)
+        public virtual string CreateNavigationUri(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
         {
             if (parameters == null)
             {
                 parameters = new NavigationParameters();
             }
 
-            if (pathParameters == null)
+            if (queries == null)
             {
-                pathParameters = new NavigationParameters();
+                queries = new NavigationParameters();
             }
 
             if (CanNavigate != null)
             {
                 var canNavigateId = Guid.NewGuid().ToString();
-                pathParameters.Add(NavigationParameterKey.CanNavigateId, canNavigateId);
+                queries.Add(NavigationParameterKey.CanNavigateId, canNavigateId);
                 parameters.Add(canNavigateId, CanNavigate);
             }
 
-            var path = NavigationNameProvider.GetNavigationName(typeof(TViewModel));
+            var uri = NavigationNameProvider.GetNavigationName(typeof(TViewModel));
 
-            if (pathParameters.Count > 0)
+            if (queries.Count > 0)
             {
-                path += "?" + string.Join("&", pathParameters.Select(pair => $"{pair.Key}={pair.Value}"));
+                uri += "?" + string.Join("&", queries.Select(pair => $"{pair.Key}={pair.Value}"));
             }
 
             if (NextNavigation != null)
             {
-                path += "/" + NextNavigation.CreateNavigationPath(parameters, nextPathParameters);
+                uri += "/" + NextNavigation.CreateNavigationUri(parameters, nextQueries);
             }
 
-            return path;
+            return uri;
         }
     }
 
@@ -83,23 +83,23 @@ namespace Prism.NavigationEx
             Parameter = parameter;
         }
 
-        public override string CreateNavigationPath(NavigationParameters parameters, NavigationParameters pathParameters = null, NavigationParameters nextPathParameters = null)
+        public override string CreateNavigationUri(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
         {
             if (parameters == null)
             {
                 parameters = new NavigationParameters();
             }
 
-            if (pathParameters == null)
+            if (queries == null)
             {
-                pathParameters = new NavigationParameters();
+                queries = new NavigationParameters();
             }
 
             var parameterId = Guid.NewGuid().ToString();
-            pathParameters.Add(NavigationParameterKey.ParameterId, parameterId);
+            queries.Add(NavigationParameterKey.ParameterId, parameterId);
             parameters.Add(parameterId, Parameter);
 
-            return base.CreateNavigationPath(parameters, pathParameters, nextPathParameters);
+            return base.CreateNavigationUri(parameters, queries, nextQueries);
         }
     }
 }
