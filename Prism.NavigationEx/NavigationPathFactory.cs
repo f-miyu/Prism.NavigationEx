@@ -37,13 +37,13 @@ namespace Prism.NavigationEx
             return new NavigationPathResult<TViewModel, TResult>(new NavigationPath<TViewModel>(navigation));
         }
 
-        public static NavigationPath CreateForTabbedPage(int selectedIndex = -1, params TabNavigation[] tabNavigations)
+        public static NavigationPath CreateForTabbedPage(int selectedIndex = -1, params ITabNavigation[] tabNavigations)
         {
             var navigation = new TabbedNavigation(selectedIndex, tabNavigations);
             return new NavigationPath(navigation);
         }
 
-        public static NavigationPath CreateForTabbedPage(string tabbedPageName, int selectedIndex = -1, params TabNavigation[] tabNavigations)
+        public static NavigationPath CreateForTabbedPage(string tabbedPageName, int selectedIndex = -1, params ITabNavigation[] tabNavigations)
         {
             var navigation = new TabbedNavigation(tabbedPageName, selectedIndex, tabNavigations);
             return new NavigationPath(navigation);

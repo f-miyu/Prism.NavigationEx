@@ -3,7 +3,7 @@ using Prism.Navigation;
 
 namespace Prism.NavigationEx
 {
-    public class TabNavigation
+    public class TabNavigation : ITabNavigation
     {
         public string Name { get; }
         public bool WrapInNavigationPage { get; }

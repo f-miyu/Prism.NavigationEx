@@ -9,22 +9,22 @@ namespace Prism.NavigationEx
     public class TabbedNavigation : INavigation
     {
         public INavigation NextNavigation { get; set; }
-        public TabNavigation[] TabNavigations { get; }
+        public ITabNavigation[] TabNavigations { get; }
         public int SelectedIndex { get; }
         public string TabbedPageName { get; }
 
-        public TabbedNavigation(int selectedIndex = -1, params TabNavigation[] tabNavigations) : this(nameof(TabbedPage), selectedIndex, tabNavigations)
+        public TabbedNavigation(int selectedIndex = -1, params ITabNavigation[] tabNavigations) : this(nameof(TabbedPage), selectedIndex, tabNavigations)
         {
         }
 
-        public TabbedNavigation(string tabbedPageName, int selectedIndex = -1, params TabNavigation[] tabNavigations)
+        public TabbedNavigation(string tabbedPageName, int selectedIndex = -1, params ITabNavigation[] tabNavigations)
         {
             if (tabNavigations != null)
             {
-                if (tabNavigations.Length != tabNavigations.Select(t => t.Name).Distinct().Count())
-                {
-                    throw new ArgumentException("duplicate name", nameof(tabNavigations));
-                }
+                //if (tabNavigations.Length != tabNavigations.Select(t => t.Name).Distinct(.Count())
+                //{
+                //    throw new ArgumentException("duplicate name", nameof(tabNavigations));
+                //}
 
                 if (selectedIndex >= tabNavigations.Length)
                 {
@@ -80,7 +80,7 @@ namespace Prism.NavigationEx
 
     public class TabbedNavigation<TViewModel> : TabbedNavigation where TViewModel : INavigationViewModel
     {
-        public TabbedNavigation(int selectedIndex = -1, params TabNavigation[] tabNavigations) : base(NavigationNameProvider.GetNavigationName(typeof(TViewModel)), selectedIndex, tabNavigations)
+        public TabbedNavigation(int selectedIndex = -1, params ITabNavigation[] tabNavigations) : base(NavigationNameProvider.GetNavigationName(typeof(TViewModel)), selectedIndex, tabNavigations)
         {
         }
     }
