@@ -3,7 +3,7 @@ using Prism.Navigation;
 
 namespace Prism.NavigationEx
 {
-    public interface ITabNavigation
+    public interface ITabNavigationPath
     {
         string Name { get; }
         string CreateTabParameter(NavigationParameters parameters);

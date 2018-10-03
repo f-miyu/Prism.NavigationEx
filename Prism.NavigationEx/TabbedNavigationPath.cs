@@ -6,18 +6,18 @@ using Xamarin.Forms;
 
 namespace Prism.NavigationEx
 {
-    public class TabbedNavigation : INavigation
+    public class TabbedNavigationPath : INavigationPath
     {
-        public INavigation NextNavigation { get; set; }
-        public ITabNavigation[] TabNavigations { get; }
+        public INavigationPath NextNavigationPath { get; set; }
+        public ITabNavigationPath[] TabNavigations { get; }
         public int SelectedIndex { get; }
         public string TabbedPageName { get; }
 
-        public TabbedNavigation(int selectedIndex = -1, params ITabNavigation[] tabNavigations) : this(nameof(TabbedPage), selectedIndex, tabNavigations)
+        public TabbedNavigationPath(int selectedIndex = -1, params ITabNavigationPath[] tabNavigations) : this(nameof(TabbedPage), selectedIndex, tabNavigations)
         {
         }
 
-        public TabbedNavigation(string tabbedPageName, int selectedIndex = -1, params ITabNavigation[] tabNavigations)
+        public TabbedNavigationPath(string tabbedPageName, int selectedIndex = -1, params ITabNavigationPath[] tabNavigations)
         {
             if (tabNavigations != null)
             {
@@ -37,7 +37,7 @@ namespace Prism.NavigationEx
             TabNavigations = tabNavigations;
         }
 
-        public string CreateNavigationUri(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
+        public string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
         {
             if (parameters == null)
             {
@@ -62,25 +62,25 @@ namespace Prism.NavigationEx
                 }
             }
 
-            var uri = TabbedPageName;
+            var path = TabbedPageName;
 
             if (queries.Count > 0)
             {
-                uri += "?" + string.Join("&", queries.Select(pair => $"{pair.Key}={pair.Value}"));
+                path += "?" + string.Join("&", queries.Select(pair => $"{pair.Key}={pair.Value}"));
             }
 
-            if (NextNavigation != null)
+            if (NextNavigationPath != null)
             {
-                uri += "/" + NextNavigation.CreateNavigationUri(parameters, nextQueries);
+                path += "/" + NextNavigationPath.GetPath(parameters, nextQueries);
             }
 
-            return uri;
+            return path;
         }
     }
 
-    public class TabbedNavigation<TViewModel> : TabbedNavigation where TViewModel : INavigationViewModel
+    public class TabbedNavigationPath<TViewModel> : TabbedNavigationPath where TViewModel : INavigationViewModel
     {
-        public TabbedNavigation(int selectedIndex = -1, params ITabNavigation[] tabNavigations) : base(NavigationNameProvider.GetNavigationName(typeof(TViewModel)), selectedIndex, tabNavigations)
+        public TabbedNavigationPath(int selectedIndex = -1, params ITabNavigationPath[] tabNavigations) : base(NavigationNameProvider.GetNavigationName(typeof(TViewModel)), selectedIndex, tabNavigations)
         {
         }
     }

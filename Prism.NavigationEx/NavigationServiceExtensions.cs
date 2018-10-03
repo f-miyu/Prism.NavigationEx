@@ -9,36 +9,36 @@ namespace Prism.NavigationEx
 {
     public static class NavigationServiceExtensions
     {
-        public static Task NavigateAsync(this INavigationService navigationService, INavigationUri navigationPath, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false)
+        public static Task NavigateAsync(this INavigationService navigationService, INavigation navigation, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false)
         {
-            if (navigationPath == null)
-                throw new ArgumentNullException(nameof(navigationPath));
+            if (navigation == null)
+                throw new ArgumentNullException(nameof(navigation));
 
-            var (uri, parameters) = navigationPath.GetUriAndParameters();
+            var (path, parameters) = navigation.GetPathAndParameters();
 
             if (wrapInNavigationPage)
             {
-                uri = NavigationNameProvider.DefaultNavigationPageName + "/" + uri;
+                path = NavigationNameProvider.DefaultNavigationPageName + "/" + path;
             }
 
             if (replaced)
             {
-                uri = "../" + uri;
+                path = "../" + path;
             }
 
             if (noHistory)
             {
-                uri = "/" + uri;
+                path = "/" + path;
             }
 
-            return navigationService.NavigateAsync(uri, parameters, useModalNavigation, animated);
+            return navigationService.NavigateAsync(path, parameters, useModalNavigation, animated);
         }
 
-        public static async Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TResult>(this INavigationService navigationService, INavigationUri<TViewModel> navigationPath, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
+        public static async Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TResult>(this INavigationService navigationService, INavigation<TViewModel> navigation, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
             where TViewModel : INavigationViewModelResult<TResult>
         {
-            if (navigationPath == null)
-                throw new ArgumentNullException(nameof(navigationPath));
+            if (navigation == null)
+                throw new ArgumentNullException(nameof(navigation));
 
             var tcs = new TaskCompletionSource<TResult>();
             var cts = new CancellationTokenSource();
@@ -59,19 +59,19 @@ namespace Prism.NavigationEx
                     additionalParameters.Add(taskCompletionSourceId, tcs);
                     additionalParameters.Add(NavigationParameterKey.CancellationTokenSource, cts);
 
-                    var (uri, parameters) = navigationPath.GetUriAndParameters(additionalParameters, additionalQueries);
+                    var (path, parameters) = navigation.GetPathAndParameters(additionalParameters, additionalQueries);
 
                     if (wrapInNavigationPage)
                     {
-                        uri = NavigationNameProvider.DefaultNavigationPageName + "/" + uri;
+                        path = NavigationNameProvider.DefaultNavigationPageName + "/" + path;
                     }
 
                     if (noHistory)
                     {
-                        uri = "/" + uri;
+                        path = "/" + path;
                     }
 
-                    await navigationService.NavigateAsync(uri, parameters, useModalNavigation, animated).ConfigureAwait(false);
+                    await navigationService.NavigateAsync(path, parameters, useModalNavigation, animated).ConfigureAwait(false);
 
                     var result = await tcs.Task.ConfigureAwait(false);
                     return new NavigationResult<TResult>(true, result);
@@ -86,25 +86,25 @@ namespace Prism.NavigationEx
         public static Task NavigateAsync<TViewModel>(this INavigationService navigationService, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false, Func<Task<bool>> canNavigate = null)
             where TViewModel : INavigationViewModel
         {
-            return navigationService.NavigateAsync(NavigationUriFactory.Create<TViewModel>(canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced);
+            return navigationService.NavigateAsync(NavigationFactory.Create<TViewModel>(canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced);
         }
 
         public static Task NavigateAsync<TViewModel, TParameter>(this INavigationService navigationService, TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false, Func<Task<bool>> canNavigate = null)
             where TViewModel : INavigationViewModel<TParameter>
         {
-            return navigationService.NavigateAsync(NavigationUriFactory.Create<TViewModel, TParameter>(parameter, canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced);
+            return navigationService.NavigateAsync(NavigationFactory.Create<TViewModel, TParameter>(parameter, canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced);
         }
 
         public static Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TResult>(this INavigationService navigationService, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, Func<Task<bool>> canNavigate = null)
             where TViewModel : INavigationViewModelResult<TResult>
         {
-            return navigationService.NavigateAsync<TViewModel, TResult>(NavigationUriFactory.Create<TViewModel>(canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory);
+            return navigationService.NavigateAsync<TViewModel, TResult>(NavigationFactory.Create<TViewModel>(canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory);
         }
 
         public static Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TParameter, TResult>(this INavigationService navigationService, TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, Func<Task<bool>> canNavigate = null)
             where TViewModel : INavigationViewModel<TParameter, TResult>
         {
-            return navigationService.NavigateAsync<TViewModel, TResult>(NavigationUriFactory.Create<TViewModel, TParameter>(parameter, canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory);
+            return navigationService.NavigateAsync<TViewModel, TResult>(NavigationFactory.Create<TViewModel, TParameter>(parameter, canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory);
         }
 
         public static Task<bool> GoBackAsync(this INavigationService navigationService, bool? useModalNavigation = null, bool animated = true, Func<Task<bool>> canNavigate = null)

@@ -1,12 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using Prism.Navigation;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Prism.NavigationEx
 {
     public interface INavigation
     {
-        INavigation NextNavigation { get; set; }
-        string CreateNavigationUri(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null);
+        (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalQueries = null);
+    }
+
+    public interface INavigation<TRootViewModel> : INavigation where TRootViewModel : INavigationViewModel
+    {
     }
 }

@@ -1,105 +1,160 @@
 ﻿using System;
-using Prism.Navigation;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Prism.Navigation;
 
 namespace Prism.NavigationEx
 {
     public class Navigation : INavigation
     {
-        public INavigation NextNavigation { get; set; }
-        public string Uri { get; }
+        private readonly NavigationImpl _navigationImpl;
 
-        public Navigation(string uri)
+        public Navigation(INavigationPath navigationPath)
         {
-            Uri = uri;
+            _navigationImpl = new NavigationImpl(navigationPath);
         }
 
-        public string CreateNavigationUri(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
+        public Navigation Add(string path)
         {
-            var uri = Uri ?? string.Empty;
-
-            if (NextNavigation != null)
-            {
-                uri += "/" + NextNavigation.CreateNavigationUri(parameters, nextQueries);
-            }
-
-            return uri;
-        }
-    }
-
-    public class Navigation<TViewModel> : INavigation where TViewModel : INavigationViewModel
-    {
-        public INavigation NextNavigation { get; set; }
-        public Func<Task<bool>> CanNavigate { get; }
-
-        public Navigation(Func<Task<bool>> canNavigate)
-        {
-            CanNavigate = canNavigate;
+            _navigationImpl.Add(path);
+            return this;
         }
 
-        public virtual string CreateNavigationUri(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
+        public Navigation Add<TViewModel>(Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
         {
-            if (parameters == null)
-            {
-                parameters = new NavigationParameters();
-            }
+            _navigationImpl.Add<TViewModel>(canNavigate);
+            return this;
+        }
 
-            if (queries == null)
-            {
-                queries = new NavigationParameters();
-            }
+        public Navigation Add<TViewModel, TParameter>(TParameter parameter, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
+        {
+            _navigationImpl.Add<TViewModel, TParameter>(parameter, canNavigate);
+            return this;
+        }
 
-            if (CanNavigate != null)
-            {
-                var canNavigateId = Guid.NewGuid().ToString();
-                queries.Add(NavigationParameterKey.CanNavigateId, canNavigateId);
-                parameters.Add(canNavigateId, CanNavigate);
-            }
+        public ResultNavigation<TResult> Add<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
+        {
+            _navigationImpl.Add<TViewModel, TResult>(resultReceived, canNavigate);
+            return new ResultNavigation<TResult>(this);
+        }
 
-            var uri = NavigationNameProvider.GetNavigationName(typeof(TViewModel));
+        public ResultNavigation<TResult> Add<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
+        {
+            _navigationImpl.Add<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate);
+            return new ResultNavigation<TResult>(this);
+        }
 
-            if (queries.Count > 0)
-            {
-                uri += "?" + string.Join("&", queries.Select(pair => $"{pair.Key}={pair.Value}"));
-            }
-
-            if (NextNavigation != null)
-            {
-                uri += "/" + NextNavigation.CreateNavigationUri(parameters, nextQueries);
-            }
-
-            return uri;
+        public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalQueries = null)
+        {
+            return _navigationImpl.GetPathAndParameters(additionalParameters, additionalQueries);
         }
     }
 
-    public class Navigation<TViewModel, TParameter> : Navigation<TViewModel> where TViewModel : INavigationViewModel<TParameter>
+    public class Navigation<TRootViewModel> : INavigation<TRootViewModel> where TRootViewModel : INavigationViewModel
     {
-        public TParameter Parameter { get; }
+        private readonly NavigationImpl _navigationImpl;
 
-        public Navigation(TParameter parameter, Func<Task<bool>> canNavigate) : base(canNavigate)
+        public Navigation(INavigationPath navigationPath)
         {
-            Parameter = parameter;
+            _navigationImpl = new NavigationImpl(navigationPath);
         }
 
-        public override string CreateNavigationUri(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
+        public Navigation<TRootViewModel> Add(string path)
         {
-            if (parameters == null)
+            _navigationImpl.Add(path);
+            return this;
+        }
+
+        public Navigation<TRootViewModel> Add<TViewModel>(Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
+        {
+            _navigationImpl.Add<TViewModel>(canNavigate);
+            return this;
+        }
+
+        public Navigation<TRootViewModel> Add<TViewModel, TParameter>(TParameter parameter, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
+        {
+            _navigationImpl.Add<TViewModel, TParameter>(parameter, canNavigate);
+            return this;
+        }
+
+        public ResultNavigation<TRootViewModel, TResult> Add<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
+        {
+            _navigationImpl.Add<TViewModel, TResult>(resultReceived, canNavigate);
+            return new ResultNavigation<TRootViewModel, TResult>(this);
+        }
+
+        public ResultNavigation<TRootViewModel, TResult> Add<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
+        {
+            _navigationImpl.Add<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate);
+            return new ResultNavigation<TRootViewModel, TResult>(this);
+        }
+
+        public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalQueries = null)
+        {
+            return _navigationImpl.GetPathAndParameters(additionalParameters, additionalQueries);
+        }
+    }
+
+    internal class NavigationImpl
+    {
+        private INavigationPath _rootNavigationPath;
+        private INavigationPath _lastNavigationPath;
+
+        public NavigationImpl(INavigationPath navigationPath)
+        {
+            _rootNavigationPath = navigationPath;
+            _lastNavigationPath = navigationPath;
+        }
+
+        public void Add(string path)
+        {
+            var navigationPath = new NavigationPath(path);
+            _lastNavigationPath.NextNavigationPath = navigationPath;
+            _lastNavigationPath = navigationPath;
+        }
+
+        public void Add<TViewModel>(Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
+        {
+            var navigationPath = new NavigationPath<TViewModel>(canNavigate);
+            _lastNavigationPath.NextNavigationPath = navigationPath;
+            _lastNavigationPath = navigationPath;
+        }
+
+        public void Add<TViewModel, TParameter>(TParameter parameter, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
+        {
+            var navigationPath = new NavigationPath<TViewModel, TParameter>(parameter, canNavigate);
+            _lastNavigationPath.NextNavigationPath = navigationPath;
+            _lastNavigationPath = navigationPath;
+        }
+
+        public void Add<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
+        {
+            var navigationPath = new ReceivableNavigationPath<TViewModel, TResult>(resultReceived, canNavigate);
+            _lastNavigationPath.NextNavigationPath = navigationPath;
+            _lastNavigationPath = navigationPath;
+        }
+
+        public void Add<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
+        {
+            var navigationPath = new ReceivableNavigationPath<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate);
+            _lastNavigationPath.NextNavigationPath = navigationPath;
+            _lastNavigationPath = navigationPath;
+        }
+
+        public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalQueries = null)
+        {
+            var parameters = new NavigationParameters();
+            if (additionalParameters != null)
             {
-                parameters = new NavigationParameters();
+                foreach (var pair in additionalParameters)
+                {
+                    parameters.Add(pair.Key, pair.Value);
+                }
             }
 
-            if (queries == null)
-            {
-                queries = new NavigationParameters();
-            }
+            var path = _rootNavigationPath.GetPath(parameters, additionalQueries);
 
-            var parameterId = Guid.NewGuid().ToString();
-            queries.Add(NavigationParameterKey.ParameterId, parameterId);
-            parameters.Add(parameterId, Parameter);
-
-            return base.CreateNavigationUri(parameters, queries, nextQueries);
+            return (path, parameters);
         }
     }
 }

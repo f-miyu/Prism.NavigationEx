@@ -3,12 +3,12 @@ using Prism.Navigation;
 
 namespace Prism.NavigationEx
 {
-    public class TabNavigation : ITabNavigation
+    public class TabNavigationPath : ITabNavigationPath
     {
         public string Name { get; }
         public bool WrapInNavigationPage { get; }
 
-        public TabNavigation(string name, bool wrapInNavigationPage)
+        public TabNavigationPath(string name, bool wrapInNavigationPage)
         {
             Name = name;
             WrapInNavigationPage = wrapInNavigationPage;
@@ -20,18 +20,18 @@ namespace Prism.NavigationEx
         }
     }
 
-    public class TabNavigation<TViewModel> : TabNavigation where TViewModel : INavigationViewModel
+    public class TabNavigationPath<TViewModel> : TabNavigationPath where TViewModel : INavigationViewModel
     {
-        public TabNavigation(bool wrapInNavigationPage) : base(NavigationNameProvider.GetNavigationName(typeof(TViewModel)), wrapInNavigationPage)
+        public TabNavigationPath(bool wrapInNavigationPage) : base(NavigationNameProvider.GetNavigationName(typeof(TViewModel)), wrapInNavigationPage)
         {
         }
     }
 
-    public class TabNavigation<TViewModel, TParameter> : TabNavigation<TViewModel> where TViewModel : INavigationViewModel<TParameter>
+    public class TabNavigationPath<TViewModel, TParameter> : TabNavigationPath<TViewModel> where TViewModel : INavigationViewModel<TParameter>
     {
         public TParameter Parameter { get; }
 
-        public TabNavigation(TParameter parameter, bool wrapInNavigationPage) : base(wrapInNavigationPage)
+        public TabNavigationPath(TParameter parameter, bool wrapInNavigationPage) : base(wrapInNavigationPage)
         {
             Parameter = parameter;
         }
