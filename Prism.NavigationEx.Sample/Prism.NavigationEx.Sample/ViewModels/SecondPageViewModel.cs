@@ -43,5 +43,10 @@ namespace Prism.NavigationEx.Sample.ViewModels
         {
             base.OnNavigatedTo(parameters);
         }
+
+        public override Task<bool> CanNavigateAsync(NavigationParameters parameters)
+        {
+            return base.CanNavigateAsync(parameters);
+        }
     }
 }

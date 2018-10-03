@@ -34,6 +34,26 @@ namespace Prism.NavigationEx
             return _navigation.Add<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate);
         }
 
+        public Navigation AddForTabbedPage<TViewModel>(Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModelResult<TReceivedResult>
+        {
+            return _navigation.AddForTabbedPage<TViewModel>(canNavigate, tabs);
+        }
+
+        public Navigation AddForTabbedPage<TViewModel, TParameter>(TParameter parameter, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel<TParameter, TReceivedResult>
+        {
+            return _navigation.AddForTabbedPage<TViewModel, TParameter>(parameter, canNavigate, tabs);
+        }
+
+        public ResultNavigation<TResult> AddForTabbedPage<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModelResult<TReceivedResult>
+        {
+            return _navigation.AddForTabbedPage<TViewModel, TResult>(resultReceived, canNavigate, tabs);
+        }
+
+        public ResultNavigation<TResult> AddForTabbedPage<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel<TParameter, TReceivedResult>
+        {
+            return _navigation.AddForTabbedPage<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate, tabs);
+        }
+
         public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalQueries = null)
         {
             return _navigation.GetPathAndParameters(additionalParameters, additionalQueries);
@@ -67,6 +87,26 @@ namespace Prism.NavigationEx
         public ResultNavigation<TRootViewModel, TResult> Add<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter, TReceivedResult>
         {
             return _navigation.Add<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate);
+        }
+
+        public Navigation<TRootViewModel> AddForTabbedPage<TViewModel>(Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModelResult<TReceivedResult>
+        {
+            return _navigation.AddForTabbedPage<TViewModel>(canNavigate, tabs);
+        }
+
+        public Navigation<TRootViewModel> AddForTabbedPage<TViewModel, TParameter>(TParameter parameter, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel<TParameter, TReceivedResult>
+        {
+            return _navigation.AddForTabbedPage<TViewModel, TParameter>(parameter, canNavigate, tabs);
+        }
+
+        public ResultNavigation<TRootViewModel, TResult> AddForTabbedPage<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModelResult<TReceivedResult>
+        {
+            return _navigation.AddForTabbedPage<TViewModel, TResult>(resultReceived, canNavigate, tabs);
+        }
+
+        public ResultNavigation<TRootViewModel, TResult> AddForTabbedPage<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel<TParameter, TReceivedResult>
+        {
+            return _navigation.AddForTabbedPage<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate, tabs);
         }
 
         public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalQueries = null)

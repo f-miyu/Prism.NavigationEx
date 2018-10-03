@@ -10,11 +10,27 @@ namespace Prism.NavigationEx
         {
             if (parameters.GetNavigationMode() == NavigationMode.New)
             {
-                if (parameters.TryGetValue<string>(NavigationParameterKey.ParameterId, out var id))
+                var navigationName = NavigationNameProvider.GetNavigationName(self.GetType());
+                if (parameters.CreateTabExists(navigationName))
                 {
-                    if (parameters.TryGetValue<TParameter>(id, out var parameter))
+                    var ids = parameters.GetCreateTabParameters(navigationName, NavigationParameterKey.ParameterId);
+                    foreach (var id in ids)
                     {
-                        self.Prepare(parameter);
+                        if (parameters.TryGetValue<TParameter>(id, out var parameter))
+                        {
+                            self.Prepare(parameter);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    if (parameters.TryGetValue<string>(NavigationParameterKey.ParameterId, out var id))
+                    {
+                        if (parameters.TryGetValue<TParameter>(id, out var parameter))
+                        {
+                            self.Prepare(parameter);
+                        }
                     }
                 }
             }

@@ -6,6 +6,7 @@ using System.Threading;
 using Xamarin.Forms;
 using Prism.Events;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Prism.NavigationEx
 {
@@ -108,13 +109,15 @@ namespace Prism.NavigationEx
         {
             base.OnNavigatingTo(parameters);
 
-            if (parameters.GetNavigationMode() == NavigationMode.New)
+            if (parameters.GetNavigationMode() == NavigationMode.New &&
+                !parameters.CreateTabExists(NavigationNameProvider.GetNavigationName(GetType())))
             {
                 if (parameters.TryGetValue<string>(NavigationParameterKey.TaskCompletionSourceId, out var id))
                 {
                     parameters.TryGetValue<TaskCompletionSource<TResult>>(id, out _tcs);
                 }
             }
+
         }
 
         public override void OnNavigatingFrom(NavigationParameters parameters)

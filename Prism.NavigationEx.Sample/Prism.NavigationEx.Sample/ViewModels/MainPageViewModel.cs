@@ -26,19 +26,21 @@ namespace Prism.NavigationEx.Sample.ViewModels
 
             GoToThirdPageCommand.Subscribe(async () =>
             {
-                var navigationPath = NavigationFactory.Create<SecondPageViewModel, string>((viewModel, thirdPageResult) =>
-                {
-                    if (thirdPageResult.Success)
-                    {
-                        viewModel.Text.Value = thirdPageResult.Data;
-                    }
-                }).Add<SecondPageViewModel>();
+                //var navigationPath = NavigationFactory.Create<SecondPageViewModel, string>((viewModel, thirdPageResult) =>
+                //{
+                //    if (thirdPageResult.Success)
+                //    {
+                //        viewModel.Text.Value = thirdPageResult.Data;
+                //    }
+                //}).Add<SecondPageViewModel>();
 
-                var result = await NavigationService.NavigateAsync<SecondPageViewModel, string>(navigationPath);
-                if (result.Success)
-                {
-                    Text.Value = result.Data;
-                }
+                var navigationPath = NavigationFactory.CreateForTabbedPage<CustomTabbedPageViewModel>(null, new Tab<ThirdPageViewModel, string>("cccc", true), new Tab<ThirdPageViewModel>(true));
+
+                await NavigationService.NavigateAsync(navigationPath);
+                //if (result.Success)
+                //{
+                //    //Text.Value = result.Data;
+                //}
             });
         }
 
@@ -50,6 +52,11 @@ namespace Prism.NavigationEx.Sample.ViewModels
         public override void OnNavigatedTo(NavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
+        }
+
+        public override Task<bool> CanNavigateAsync(NavigationParameters parameters)
+        {
+            return base.CanNavigateAsync(parameters);
         }
     }
 }

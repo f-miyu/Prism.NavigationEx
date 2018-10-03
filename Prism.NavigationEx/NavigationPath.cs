@@ -9,16 +9,21 @@ namespace Prism.NavigationEx
     public class NavigationPath : INavigationPath
     {
         public INavigationPath NextNavigationPath { get; set; }
-        public string Path { get; }
+        protected string _path;
 
         public NavigationPath(string path)
         {
-            Path = path;
+            _path = path;
         }
 
-        public string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
+        public virtual string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
         {
-            var path = Path ?? string.Empty;
+            var path = _path ?? string.Empty;
+
+            if (queries != null && queries.Count > 0)
+            {
+                path += "?" + string.Join("&", queries.Select(pair => $"{pair.Key}={pair.Value}"));
+            }
 
             if (NextNavigationPath != null)
             {
@@ -32,11 +37,11 @@ namespace Prism.NavigationEx
     public class NavigationPath<TViewModel> : INavigationPath where TViewModel : INavigationViewModel
     {
         public INavigationPath NextNavigationPath { get; set; }
-        public Func<Task<bool>> CanNavigate { get; }
+        protected Func<Task<bool>> _canNavigate;
 
-        public NavigationPath(Func<Task<bool>> canNavigate)
+        public NavigationPath(Func<Task<bool>> canNavigate = null)
         {
-            CanNavigate = canNavigate;
+            _canNavigate = canNavigate;
         }
 
         public virtual string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
@@ -51,11 +56,11 @@ namespace Prism.NavigationEx
                 queries = new NavigationParameters();
             }
 
-            if (CanNavigate != null)
+            if (_canNavigate != null)
             {
                 var canNavigateId = Guid.NewGuid().ToString();
                 queries.Add(NavigationParameterKey.CanNavigateId, canNavigateId);
-                parameters.Add(canNavigateId, CanNavigate);
+                parameters.Add(canNavigateId, _canNavigate);
             }
 
             var path = NavigationNameProvider.GetNavigationName(typeof(TViewModel));
@@ -76,11 +81,11 @@ namespace Prism.NavigationEx
 
     public class NavigationPath<TViewModel, TParameter> : NavigationPath<TViewModel> where TViewModel : INavigationViewModel<TParameter>
     {
-        public TParameter Parameter { get; }
+        protected TParameter _parameter;
 
-        public NavigationPath(TParameter parameter, Func<Task<bool>> canNavigate) : base(canNavigate)
+        public NavigationPath(TParameter parameter, Func<Task<bool>> canNavigate = null) : base(canNavigate)
         {
-            Parameter = parameter;
+            _parameter = parameter;
         }
 
         public override string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
@@ -97,7 +102,7 @@ namespace Prism.NavigationEx
 
             var parameterId = Guid.NewGuid().ToString();
             queries.Add(NavigationParameterKey.ParameterId, parameterId);
-            parameters.Add(parameterId, Parameter);
+            parameters.Add(parameterId, _parameter);
 
             return base.GetPath(parameters, queries, nextQueries);
         }

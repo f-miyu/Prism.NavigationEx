@@ -7,28 +7,12 @@ namespace Prism.NavigationEx
 {
     public class ReceivableNavigationPath<TViewModel, TResult> : NavigationPath<TViewModel> where TViewModel : INavigationViewModel
     {
-        public ResultReceivedDelegate<TViewModel, TResult> ResultReceived { get; }
-
+        protected ResultReceivedDelegate<TViewModel, TResult> _resultReceived;
         protected TaskCompletionSource<TResult> _tcs;
 
-        public ReceivableNavigationPath(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate) : base(canNavigate)
+        public ReceivableNavigationPath(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) : base(canNavigate)
         {
-            ResultReceived = resultReceived;
-        }
-
-        public async Task ReceiveResultAsync(INavigationViewModel viewModel)
-        {
-            if (_tcs == null) return;
-
-            try
-            {
-                var result = await _tcs.Task.ConfigureAwait(false);
-                ResultReceived?.Invoke((TViewModel)viewModel, new NavigationResult<TResult>(true, result));
-            }
-            catch (Exception e)
-            {
-                ResultReceived?.Invoke((TViewModel)viewModel, new NavigationResult<TResult>(false, default(TResult), e));
-            }
+            _resultReceived = resultReceived;
         }
 
         public override string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
@@ -68,15 +52,30 @@ namespace Prism.NavigationEx
 
             return base.GetPath(parameters, queries, nextQueries);
         }
+
+        private async Task ReceiveResultAsync(INavigationViewModel viewModel)
+        {
+            if (_tcs == null) return;
+
+            try
+            {
+                var result = await _tcs.Task.ConfigureAwait(false);
+                _resultReceived?.Invoke((TViewModel)viewModel, new NavigationResult<TResult>(true, result));
+            }
+            catch (Exception e)
+            {
+                _resultReceived?.Invoke((TViewModel)viewModel, new NavigationResult<TResult>(false, default(TResult), e));
+            }
+        }
     }
 
     public class ReceivableNavigationPath<TViewModel, TParameter, TResult> : ReceivableNavigationPath<TViewModel, TResult> where TViewModel : INavigationViewModel<TParameter>
     {
-        public TParameter Parameter { get; }
+        protected TParameter _parameter;
 
-        public ReceivableNavigationPath(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate) : base(resultReceived, canNavigate)
+        public ReceivableNavigationPath(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) : base(resultReceived, canNavigate)
         {
-            Parameter = parameter;
+            _parameter = parameter;
         }
 
         public override string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
@@ -93,7 +92,7 @@ namespace Prism.NavigationEx
 
             var parameterId = Guid.NewGuid().ToString();
             queries.Add(NavigationParameterKey.ParameterId, parameterId);
-            parameters.Add(parameterId, Parameter);
+            parameters.Add(parameterId, _parameter);
 
             return base.GetPath(parameters, queries, nextQueries);
         }

@@ -3,85 +3,59 @@ using System.Collections.Generic;
 using Prism.Navigation;
 using System.Linq;
 using Xamarin.Forms;
+using System.Threading.Tasks;
 
 namespace Prism.NavigationEx
 {
-    public class TabbedNavigationPath : INavigationPath
+    public class TabbedNavigationPath : NavigationPath
     {
-        public INavigationPath NextNavigationPath { get; set; }
-        public ITabNavigationPath[] TabNavigations { get; }
-        public int SelectedIndex { get; }
-        public string TabbedPageName { get; }
+        protected ITab[] _tabs;
 
-        public TabbedNavigationPath(int selectedIndex = -1, params ITabNavigationPath[] tabNavigations) : this(nameof(TabbedPage), selectedIndex, tabNavigations)
+        public TabbedNavigationPath(params ITab[] tabs) : this(nameof(TabbedPage), tabs)
         {
         }
 
-        public TabbedNavigationPath(string tabbedPageName, int selectedIndex = -1, params ITabNavigationPath[] tabNavigations)
+        public TabbedNavigationPath(string path, params ITab[] tabs) : base(path)
         {
-            if (tabNavigations != null)
-            {
-                //if (tabNavigations.Length != tabNavigations.Select(t => t.Name).Distinct(.Count())
-                //{
-                //    throw new ArgumentException("duplicate name", nameof(tabNavigations));
-                //}
-
-                if (selectedIndex >= tabNavigations.Length)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(selectedIndex));
-                }
-            }
-
-            TabbedPageName = tabbedPageName;
-            SelectedIndex = selectedIndex;
-            TabNavigations = tabNavigations;
+            _tabs = tabs;
         }
 
-        public string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
+        public override string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
         {
-            if (parameters == null)
-            {
-                parameters = new NavigationParameters();
-            }
-
-            if (queries == null)
-            {
-                queries = new NavigationParameters();
-            }
-
-            if (TabNavigations != null && TabNavigations.Length > 0)
-            {
-                foreach (var tabNavigations in TabNavigations)
-                {
-                    queries.Add(KnownNavigationParameters.CreateTab, tabNavigations.CreateTabParameter(parameters));
-                }
-
-                if (SelectedIndex >= 0)
-                {
-                    queries.Add(KnownNavigationParameters.SelectedTab, TabNavigations[SelectedIndex].Name);
-                }
-            }
-
-            var path = TabbedPageName;
-
-            if (queries.Count > 0)
-            {
-                path += "?" + string.Join("&", queries.Select(pair => $"{pair.Key}={pair.Value}"));
-            }
-
-            if (NextNavigationPath != null)
-            {
-                path += "/" + NextNavigationPath.GetPath(parameters, nextQueries);
-            }
-
-            return path;
+            TabbedNavigationPathHelper.SetParameters(ref parameters, ref queries, _tabs);
+            return base.GetPath(parameters, queries, nextQueries);
         }
     }
 
-    public class TabbedNavigationPath<TViewModel> : TabbedNavigationPath where TViewModel : INavigationViewModel
+    public class TabbedNavigationPath<TViewModel> : NavigationPath<TViewModel> where TViewModel : INavigationViewModel
     {
-        public TabbedNavigationPath(int selectedIndex = -1, params ITabNavigationPath[] tabNavigations) : base(NavigationNameProvider.GetNavigationName(typeof(TViewModel)), selectedIndex, tabNavigations)
+        protected ITab[] _tabs;
+
+        public TabbedNavigationPath(Func<Task<bool>> canNavigate = null, params ITab[] tabs) : base(canNavigate)
         {
+            _tabs = tabs;
+        }
+
+        public override string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
+        {
+            TabbedNavigationPathHelper.SetParameters(ref parameters, ref queries, _tabs);
+            return base.GetPath(parameters, queries, nextQueries);
+        }
+    }
+
+    public class TabbedNavigationPath<TViewModel, TParameter> : NavigationPath<TViewModel, TParameter> where TViewModel : INavigationViewModel<TParameter>
+    {
+        protected ITab[] _tabs;
+
+        public TabbedNavigationPath(TParameter parameter, Func<Task<bool>> canNavigate = null, params ITab[] tabs) : base(parameter, canNavigate)
+        {
+            _tabs = tabs;
+        }
+
+        public override string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
+        {
+            TabbedNavigationPathHelper.SetParameters(ref parameters, ref queries, _tabs);
+            return base.GetPath(parameters, queries, nextQueries);
         }
     }
 }

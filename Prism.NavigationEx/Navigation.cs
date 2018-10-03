@@ -44,6 +44,42 @@ namespace Prism.NavigationEx
             return new ResultNavigation<TResult>(this);
         }
 
+        public Navigation AddForTabbedPage(params ITab[] tabs)
+        {
+            _navigationImpl.AddForTabbedPage(tabs);
+            return this;
+        }
+
+        public Navigation AddForTabbedPage(string path, params ITab[] tabs)
+        {
+            _navigationImpl.AddForTabbedPage(path, tabs);
+            return this;
+        }
+
+        public Navigation AddForTabbedPage<TViewModel>(Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel
+        {
+            _navigationImpl.AddForTabbedPage<TViewModel>(canNavigate, tabs);
+            return this;
+        }
+
+        public Navigation AddForTabbedPage<TViewModel, TParameter>(TParameter parameter, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel<TParameter>
+        {
+            _navigationImpl.AddForTabbedPage<TViewModel, TParameter>(parameter, canNavigate, tabs);
+            return this;
+        }
+
+        public ResultNavigation<TResult> AddForTabbedPage<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel
+        {
+            _navigationImpl.AddForTabbedPage<TViewModel, TResult>(resultReceived, canNavigate, tabs);
+            return new ResultNavigation<TResult>(this);
+        }
+
+        public ResultNavigation<TResult> AddForTabbedPage<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel<TParameter>
+        {
+            _navigationImpl.AddForTabbedPage<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate, tabs);
+            return new ResultNavigation<TResult>(this);
+        }
+
         public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalQueries = null)
         {
             return _navigationImpl.GetPathAndParameters(additionalParameters, additionalQueries);
@@ -86,6 +122,42 @@ namespace Prism.NavigationEx
         public ResultNavigation<TRootViewModel, TResult> Add<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
         {
             _navigationImpl.Add<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate);
+            return new ResultNavigation<TRootViewModel, TResult>(this);
+        }
+
+        public Navigation<TRootViewModel> AddForTabbedPage(params ITab[] tabs)
+        {
+            _navigationImpl.AddForTabbedPage(tabs);
+            return this;
+        }
+
+        public Navigation<TRootViewModel> AddForTabbedPage(string path, params ITab[] tabs)
+        {
+            _navigationImpl.AddForTabbedPage(path, tabs);
+            return this;
+        }
+
+        public Navigation<TRootViewModel> AddForTabbedPage<TViewModel>(Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel
+        {
+            _navigationImpl.AddForTabbedPage<TViewModel>(canNavigate, tabs);
+            return this;
+        }
+
+        public Navigation<TRootViewModel> AddForTabbedPage<TViewModel, TParameter>(TParameter parameter, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel<TParameter>
+        {
+            _navigationImpl.AddForTabbedPage<TViewModel, TParameter>(parameter, canNavigate, tabs);
+            return this;
+        }
+
+        public ResultNavigation<TRootViewModel, TResult> AddForTabbedPage<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel
+        {
+            _navigationImpl.AddForTabbedPage<TViewModel, TResult>(resultReceived, canNavigate, tabs);
+            return new ResultNavigation<TRootViewModel, TResult>(this);
+        }
+
+        public ResultNavigation<TRootViewModel, TResult> AddForTabbedPage<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel<TParameter>
+        {
+            _navigationImpl.AddForTabbedPage<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate, tabs);
             return new ResultNavigation<TRootViewModel, TResult>(this);
         }
 
@@ -137,6 +209,48 @@ namespace Prism.NavigationEx
         public void Add<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
         {
             var navigationPath = new ReceivableNavigationPath<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate);
+            _lastNavigationPath.NextNavigationPath = navigationPath;
+            _lastNavigationPath = navigationPath;
+        }
+
+        public void AddForTabbedPage(params ITab[] tabs)
+        {
+            var navigationPath = new TabbedNavigationPath(tabs);
+            _lastNavigationPath.NextNavigationPath = navigationPath;
+            _lastNavigationPath = navigationPath;
+        }
+
+        public void AddForTabbedPage(string path, params ITab[] tabs)
+        {
+            var navigationPath = new TabbedNavigationPath(path, tabs);
+            _lastNavigationPath.NextNavigationPath = navigationPath;
+            _lastNavigationPath = navigationPath;
+        }
+
+        public void AddForTabbedPage<TViewModel>(Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel
+        {
+            var navigationPath = new TabbedNavigationPath<TViewModel>(canNavigate, tabs);
+            _lastNavigationPath.NextNavigationPath = navigationPath;
+            _lastNavigationPath = navigationPath;
+        }
+
+        public void AddForTabbedPage<TViewModel, TParameter>(TParameter parameter, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel<TParameter>
+        {
+            var navigationPath = new TabbedNavigationPath<TViewModel, TParameter>(parameter, canNavigate, tabs);
+            _lastNavigationPath.NextNavigationPath = navigationPath;
+            _lastNavigationPath = navigationPath;
+        }
+
+        public void AddForTabbedPage<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel
+        {
+            var navigationPath = new ReceivableTabbedNavigationPath<TViewModel, TResult>(resultReceived, canNavigate, tabs);
+            _lastNavigationPath.NextNavigationPath = navigationPath;
+            _lastNavigationPath = navigationPath;
+        }
+
+        public void AddForTabbedPage<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel<TParameter>
+        {
+            var navigationPath = new ReceivableTabbedNavigationPath<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate, tabs);
             _lastNavigationPath.NextNavigationPath = navigationPath;
             _lastNavigationPath = navigationPath;
         }
