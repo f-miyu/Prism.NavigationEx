@@ -6,7 +6,7 @@
     <PackageLicenseUrl>https://github.com/f-miyu/Prism.NavigationEx/blob/master/LICENSE</PackageLicenseUrl>
     <Owners>f-miyu</Owners>
     <PackageProjectUrl>https://github.com/f-miyu/Prism.NavigationEx</PackageProjectUrl>
-    <PackageTags>xamarin, ios, android, xamarin.forms, prism, prism.forms, navigation</PackageTags>
+    <PackageTags>xamarin, uwp, ios, android, xamarin.forms, prism, prism.forms, navigation</PackageTags>
     <Description>Navigation extensions for Prism.Forms</Description>
     <PackageId>Prism.NavigationEx</PackageId>
   </PropertyGroup>
@@ -16,14 +16,5 @@
   <ItemGroup>
     <PackageReference Include="Prism.Forms" Version="[7.0.0.396]" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Mono.Android">
-      <HintPath>..\..\..\..\..\Library\Frameworks\Mono.framework\External\xbuild-frameworks\MonoAndroid\v9.0\Mono.Android.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="ReceivableTabbedNavigationPath.cs" />
-    <Compile Remove="TabbedNavigationPath.cs" />
   </ItemGroup>
 </Project>
