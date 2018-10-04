@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Prism.Navigation;
 using Reactive.Bindings;
 using Prism.Services;
+using Prism.Events;
 
 namespace Prism.NavigationEx.Sample.ViewModels
 {
@@ -15,7 +16,7 @@ namespace Prism.NavigationEx.Sample.ViewModels
 
         private readonly IPageDialogService _pageDialogService;
 
-        public ThirdPageViewModel(INavigationService navigationService, IPageDialogService pageDialogService) : base(navigationService)
+        public ThirdPageViewModel(INavigationService navigationService, IPageDialogService pageDialogService, IEventAggregator eventAggregator) : base(navigationService)
         {
             _pageDialogService = pageDialogService;
 

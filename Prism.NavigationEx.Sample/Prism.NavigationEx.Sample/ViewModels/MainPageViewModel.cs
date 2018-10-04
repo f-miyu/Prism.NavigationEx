@@ -4,18 +4,21 @@ using Prism.Navigation;
 using Reactive.Bindings;
 using System;
 using System.Threading.Tasks;
+using Xamarin.Forms;
+using Prism.Services;
 
 namespace Prism.NavigationEx.Sample.ViewModels
 {
     public class MainPageViewModel : NavigationViewModel
     {
         public ReactivePropertySlim<string> Text { get; } = new ReactivePropertySlim<string>();
-        public AsyncReactiveCommand GoToSecondPpageCommand { get; } = new AsyncReactiveCommand();
+        public AsyncReactiveCommand GoToSecondPageCommand { get; } = new AsyncReactiveCommand();
         public AsyncReactiveCommand GoToThirdPageCommand { get; } = new AsyncReactiveCommand();
+        public AsyncReactiveCommand GoToTabbedPageCommand { get; } = new AsyncReactiveCommand();
 
-        public MainPageViewModel(INavigationService navigationService) : base(navigationService)
+        public MainPageViewModel(INavigationService navigationService, IPageDialogService pageDialogService) : base(navigationService)
         {
-            GoToSecondPpageCommand.Subscribe(async () =>
+            GoToSecondPageCommand.Subscribe(async () =>
             {
                 var result = await NavigationService.NavigateAsync<SecondPageViewModel, string>();
                 if (result.Success)
@@ -26,37 +29,27 @@ namespace Prism.NavigationEx.Sample.ViewModels
 
             GoToThirdPageCommand.Subscribe(async () =>
             {
-                //var navigationPath = NavigationFactory.Create<SecondPageViewModel, string>((viewModel, thirdPageResult) =>
-                //{
-                //    if (thirdPageResult.Success)
-                //    {
-                //        viewModel.Text.Value = thirdPageResult.Data;
-                //    }
-                //}).Add<SecondPageViewModel>();
+                var navigation = NavigationFactory.Create<SecondPageViewModel, string>((viewModel, thirdPageResult) =>
+                {
+                    if (thirdPageResult.Success && viewModel is SecondPageViewModel secondPageViewModel)
+                    {
+                        secondPageViewModel.Text.Value = thirdPageResult.Data;
+                    }
+                }).Add<ThirdPageViewModel>(() => pageDialogService.DisplayAlertAsync("Are you sure?", null, "Yes", "No"));
 
-                var navigationPath = NavigationFactory.CreateForTabbedPage<CustomTabbedPageViewModel>(null, new Tab<ThirdPageViewModel, string>("cccc", true), new Tab<ThirdPageViewModel>(true));
-
-                await NavigationService.NavigateAsync(navigationPath);
-                //if (result.Success)
-                //{
-                //    //Text.Value = result.Data;
-                //}
+                var result = await NavigationService.NavigateAsync<SecondPageViewModel, string>(navigation);
+                if (result.Success)
+                {
+                    Text.Value = result.Data;
+                }
             });
-        }
 
-        public override void OnNavigatingTo(NavigationParameters parameters)
-        {
-            base.OnNavigatingTo(parameters);
-        }
+            GoToTabbedPageCommand.Subscribe(async () =>
+            {
+                var navigation = NavigationFactory.Create(nameof(TabbedPage), new Tab<FirstTabPageViewModel, string>(Text.Value, true), new Tab<SecondTabPageViewModel>(true));
 
-        public override void OnNavigatedTo(NavigationParameters parameters)
-        {
-            base.OnNavigatedTo(parameters);
-        }
-
-        public override Task<bool> CanNavigateAsync(NavigationParameters parameters)
-        {
-            return base.CanNavigateAsync(parameters);
+                await NavigationService.NavigateAsync(navigation, noHistory: true);
+            });
         }
     }
 }

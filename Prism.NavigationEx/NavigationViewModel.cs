@@ -117,7 +117,6 @@ namespace Prism.NavigationEx
                     parameters.TryGetValue<TaskCompletionSource<TResult>>(id, out _tcs);
                 }
             }
-
         }
 
         public override void OnNavigatingFrom(NavigationParameters parameters)

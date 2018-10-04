@@ -16,9 +16,11 @@ namespace Prism.NavigationEx
                     var ids = parameters.GetCreateTabParameters(navigationName, NavigationParameterKey.ParameterId);
                     foreach (var id in ids)
                     {
-                        if (parameters.TryGetValue<TParameter>(id, out var parameter))
+                        var key = "_" + id;
+                        if (!parameters.ContainsKey(key) && parameters.TryGetValue<TParameter>(id, out var parameter))
                         {
                             self.Prepare(parameter);
+                            parameters.Add(key, null);
                             break;
                         }
                     }

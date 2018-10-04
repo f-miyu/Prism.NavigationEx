@@ -9,39 +9,22 @@ namespace Prism.NavigationEx
     public class NavigationPath : INavigationPath
     {
         public INavigationPath NextNavigationPath { get; set; }
-        protected string _path;
+        public Func<Task<bool>> CanNavigate { get; set; }
+        public IEnumerable<ITab> Tabs { get; set; }
+        public Type ViewModelType { get; set; }
+        public string Path { get; set; }
 
-        public NavigationPath(string path)
+        protected bool _isParameterSet;
+        private object _parameter;
+
+        public object Parameter
         {
-            _path = path;
-        }
-
-        public virtual string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
-        {
-            var path = _path ?? string.Empty;
-
-            if (queries != null && queries.Count > 0)
+            get => _parameter;
+            set
             {
-                path += "?" + string.Join("&", queries.Select(pair => $"{pair.Key}={pair.Value}"));
+                _parameter = value;
+                _isParameterSet = true;
             }
-
-            if (NextNavigationPath != null)
-            {
-                path += "/" + NextNavigationPath.GetPath(parameters, nextQueries);
-            }
-
-            return path;
-        }
-    }
-
-    public class NavigationPath<TViewModel> : INavigationPath where TViewModel : INavigationViewModel
-    {
-        public INavigationPath NextNavigationPath { get; set; }
-        protected Func<Task<bool>> _canNavigate;
-
-        public NavigationPath(Func<Task<bool>> canNavigate = null)
-        {
-            _canNavigate = canNavigate;
         }
 
         public virtual string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
@@ -56,14 +39,33 @@ namespace Prism.NavigationEx
                 queries = new NavigationParameters();
             }
 
-            if (_canNavigate != null)
+            if (CanNavigate != null)
             {
                 var canNavigateId = Guid.NewGuid().ToString();
                 queries.Add(NavigationParameterKey.CanNavigateId, canNavigateId);
-                parameters.Add(canNavigateId, _canNavigate);
+                parameters.Add(canNavigateId, CanNavigate);
             }
 
-            var path = NavigationNameProvider.GetNavigationName(typeof(TViewModel));
+            if (_isParameterSet)
+            {
+                var parameterId = Guid.NewGuid().ToString();
+                queries.Add(NavigationParameterKey.ParameterId, parameterId);
+                parameters.Add(parameterId, Parameter);
+            }
+
+            if (Tabs != null)
+            {
+                foreach (var tab in Tabs)
+                {
+                    queries.Add(KnownNavigationParameters.CreateTab, tab.GetPath(ref parameters));
+                }
+            }
+
+            var path = Path ?? string.Empty;
+            if (ViewModelType != null)
+            {
+                path = NavigationNameProvider.GetNavigationName(ViewModelType);
+            }
 
             if (queries.Count > 0)
             {
@@ -79,14 +81,10 @@ namespace Prism.NavigationEx
         }
     }
 
-    public class NavigationPath<TViewModel, TParameter> : NavigationPath<TViewModel> where TViewModel : INavigationViewModel<TParameter>
+    public class NavigationPath<TResult> : NavigationPath
     {
-        protected TParameter _parameter;
-
-        public NavigationPath(TParameter parameter, Func<Task<bool>> canNavigate = null) : base(canNavigate)
-        {
-            _parameter = parameter;
-        }
+        public ResultReceivedDelegate<TResult> ResultReceived { get; set; }
+        protected TaskCompletionSource<TResult> _tcs;
 
         public override string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
         {
@@ -95,16 +93,50 @@ namespace Prism.NavigationEx
                 parameters = new NavigationParameters();
             }
 
-            if (queries == null)
+            if (NextNavigationPath != null)
             {
-                queries = new NavigationParameters();
+                if (queries == null)
+                {
+                    queries = new NavigationParameters();
+                }
+
+                if (nextQueries == null)
+                {
+                    nextQueries = new NavigationParameters();
+                }
+
+                Func<INavigationViewModel, Task> receiveResult = ReceiveResultAsync;
+                var receiveResultId = Guid.NewGuid().ToString();
+                queries.Add(NavigationParameterKey.ReceiveResultId, receiveResultId);
+                parameters.Add(receiveResultId, receiveResult);
+
+                if (_tcs != null && !_tcs.Task.IsCompleted)
+                {
+                    _tcs.TrySetCanceled();
+                }
+
+                _tcs = new TaskCompletionSource<TResult>();
+                var taskCompletionSourceId = Guid.NewGuid().ToString();
+                nextQueries.Add(NavigationParameterKey.TaskCompletionSourceId, taskCompletionSourceId);
+                parameters.Add(taskCompletionSourceId, _tcs);
             }
 
-            var parameterId = Guid.NewGuid().ToString();
-            queries.Add(NavigationParameterKey.ParameterId, parameterId);
-            parameters.Add(parameterId, _parameter);
-
             return base.GetPath(parameters, queries, nextQueries);
+        }
+
+        private async Task ReceiveResultAsync(INavigationViewModel viewModel)
+        {
+            if (_tcs == null) return;
+
+            try
+            {
+                var result = await _tcs.Task.ConfigureAwait(false);
+                ResultReceived?.Invoke(viewModel, new NavigationResult<TResult>(true, result));
+            }
+            catch (Exception e)
+            {
+                ResultReceived?.Invoke(viewModel, new NavigationResult<TResult>(false, default(TResult), e));
+            }
         }
     }
 }

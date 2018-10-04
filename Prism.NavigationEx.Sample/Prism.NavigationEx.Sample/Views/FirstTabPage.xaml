@@ -1,12 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             x:Class="Prism.NavigationEx.Sample.Views.MainPage" 
-             Title="Main Page">
+             x:Class="Prism.NavigationEx.Sample.Views.FirstTabPage"
+             Title="First Tab Page">
     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Padding="8">
         <Label Text="{Binding Text.Value}" HorizontalOptions="Center"/>
         <Button Text="Go to Second Page" Command="{Binding GoToSecondPageCommand}" HorizontalOptions="Center"/>
-        <Button Text="Go to Third Page" Command="{Binding GoToThirdPageCommand}" HorizontalOptions="Center"/>
-        <Button Text="Go to Tabbed Page" Command="{Binding GoToTabbedPageCommand}" HorizontalOptions="Center"/>
     </StackLayout>
 </ContentPage>

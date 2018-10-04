@@ -8,7 +8,7 @@ namespace Prism.NavigationEx
         protected string _name;
         protected bool _wrapInNavigationPage;
 
-        public Tab(string name, bool wrapInNavigationPage)
+        public Tab(string name, bool wrapInNavigationPage = false)
         {
             _name = name;
             _wrapInNavigationPage = wrapInNavigationPage;
@@ -24,7 +24,7 @@ namespace Prism.NavigationEx
     {
         protected bool _wrapInNavigationPage;
 
-        public Tab(bool wrapInNavigationPage)
+        public Tab(bool wrapInNavigationPage = false)
         {
             _wrapInNavigationPage = wrapInNavigationPage;
         }
@@ -40,7 +40,7 @@ namespace Prism.NavigationEx
     {
         protected TParameter _parameter;
 
-        public Tab(TParameter parameter, bool wrapInNavigationPage) : base(wrapInNavigationPage)
+        public Tab(TParameter parameter, bool wrapInNavigationPage = false) : base(wrapInNavigationPage)
         {
             _parameter = parameter;
         }
@@ -52,13 +52,13 @@ namespace Prism.NavigationEx
                 parameters = new NavigationParameters();
             }
 
-            var parameter = base.GetPath(ref parameters);
+            var path = base.GetPath(ref parameters);
 
             var parameterId = Guid.NewGuid().ToString();
-            parameter += $"?{NavigationParameterKey.ParameterId}={parameterId}";
+            path += $"?{NavigationParameterKey.ParameterId}={parameterId}";
             parameters.Add(parameterId, _parameter);
 
-            return parameter;
+            return path;
         }
     }
 }

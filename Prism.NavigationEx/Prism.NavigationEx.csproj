@@ -22,4 +22,8 @@
       <HintPath>..\..\..\..\..\Library\Frameworks\Mono.framework\External\xbuild-frameworks\MonoAndroid\v9.0\Mono.Android.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="ReceivableTabbedNavigationPath.cs" />
+    <Compile Remove="TabbedNavigationPath.cs" />
+  </ItemGroup>
 </Project>

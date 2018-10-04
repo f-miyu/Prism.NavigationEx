@@ -3,73 +3,65 @@ using System.Threading.Tasks;
 
 namespace Prism.NavigationEx
 {
-    public delegate void ResultReceivedDelegate<TViewModel, TResult>(TViewModel viewModel, INavigationResult<TResult> result);
+    public delegate void ResultReceivedDelegate<TResult>(INavigationViewModel viewModel, INavigationResult<TResult> result);
 
     public static class NavigationFactory
     {
-        public static Navigation Create(string path)
+        public static Navigation Create(string path, params ITab[] tabs)
         {
-            var navigationPath = new NavigationPath(path);
+            var navigationPath = new NavigationPath
+            {
+                Path = path,
+                Tabs = tabs
+            };
             return new Navigation(navigationPath);
         }
 
-        public static Navigation<TViewModel> Create<TViewModel>(Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
+        public static Navigation<TViewModel> Create<TViewModel>(Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel
         {
-            var navigationPath = new NavigationPath<TViewModel>(canNavigate);
+            var navigationPath = new NavigationPath
+            {
+                ViewModelType = typeof(TViewModel),
+                CanNavigate = canNavigate,
+                Tabs = tabs
+            };
             return new Navigation<TViewModel>(navigationPath);
         }
 
-        public static Navigation<TViewModel> Create<TViewModel, TParameter>(TParameter parameter, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
+        public static Navigation<TViewModel> Create<TViewModel, TParameter>(TParameter parameter, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel<TParameter>
         {
-            var navigationPath = new NavigationPath<TViewModel, TParameter>(parameter, canNavigate);
+            var navigationPath = new NavigationPath
+            {
+                ViewModelType = typeof(TViewModel),
+                Parameter = parameter,
+                CanNavigate = canNavigate,
+                Tabs = tabs
+            };
             return new Navigation<TViewModel>(navigationPath);
         }
 
-        public static ResultNavigation<TViewModel, TResult> Create<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel
+        public static ResultNavigation<TViewModel, TResult> Create<TViewModel, TResult>(ResultReceivedDelegate<TResult> resultReceived, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel
         {
-            var navigationPath = new ReceivableNavigationPath<TViewModel, TResult>(resultReceived, canNavigate);
+            var navigationPath = new NavigationPath<TResult>
+            {
+                ViewModelType = typeof(TViewModel),
+                ResultReceived = resultReceived,
+                CanNavigate = canNavigate,
+                Tabs = tabs
+            };
             return new ResultNavigation<TViewModel, TResult>(new Navigation<TViewModel>(navigationPath));
         }
 
-        public static ResultNavigation<TViewModel, TResult> Create<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null) where TViewModel : INavigationViewModel<TParameter>
+        public static ResultNavigation<TViewModel, TResult> Create<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TResult> resultReceived, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel<TParameter>
         {
-            var navigationPath = new ReceivableNavigationPath<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate);
-            return new ResultNavigation<TViewModel, TResult>(new Navigation<TViewModel>(navigationPath));
-        }
-
-        public static Navigation CreateForTabbedPage(params ITab[] tabs)
-        {
-            var navigationPath = new TabbedNavigationPath(tabs);
-            return new Navigation(navigationPath);
-        }
-
-        public static Navigation CreateForTabbedPage(string path, params ITab[] tabs)
-        {
-            var navigationPath = new TabbedNavigationPath(path, tabs);
-            return new Navigation(navigationPath);
-        }
-
-        public static Navigation<TViewModel> CreateForTabbedPage<TViewModel>(Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel
-        {
-            var navigationPath = new TabbedNavigationPath<TViewModel>(canNavigate, tabs);
-            return new Navigation<TViewModel>(navigationPath);
-        }
-
-        public static Navigation<TViewModel> CreateForTabbedPage<TViewModel, TParameter>(TParameter parameter, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel<TParameter>
-        {
-            var navigationPath = new TabbedNavigationPath<TViewModel, TParameter>(parameter, canNavigate, tabs);
-            return new Navigation<TViewModel>(navigationPath);
-        }
-
-        public static ResultNavigation<TViewModel, TResult> CreateForTabbedPage<TViewModel, TResult>(ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel
-        {
-            var navigationPath = new ReceivableTabbedNavigationPath<TViewModel, TResult>(resultReceived, canNavigate, tabs);
-            return new ResultNavigation<TViewModel, TResult>(new Navigation<TViewModel>(navigationPath));
-        }
-
-        public static ResultNavigation<TViewModel, TResult> CreateForTabbedPage<TViewModel, TParameter, TResult>(TParameter parameter, ResultReceivedDelegate<TViewModel, TResult> resultReceived, Func<Task<bool>> canNavigate = null, params ITab[] tabs) where TViewModel : INavigationViewModel<TParameter>
-        {
-            var navigationPath = new ReceivableTabbedNavigationPath<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate, tabs);
+            var navigationPath = new NavigationPath<TResult>
+            {
+                ViewModelType = typeof(TViewModel),
+                Parameter = parameter,
+                ResultReceived = resultReceived,
+                CanNavigate = canNavigate,
+                Tabs = tabs
+            };
             return new ResultNavigation<TViewModel, TResult>(new Navigation<TViewModel>(navigationPath));
         }
     }

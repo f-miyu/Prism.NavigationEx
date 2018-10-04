@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="Prism.NavigationEx.Sample.Views.SecondTabPage"
+             Title="Second Tab Page">
+    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Padding="8">
+        <Button Text="Go to Main Page" Command="{Binding GoToMainPageCommand}" HorizontalOptions="Center"/>
+    </StackLayout>
+</ContentPage>
