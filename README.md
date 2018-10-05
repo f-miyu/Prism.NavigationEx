@@ -1,8 +1,36 @@
 # Prism.NavigationEx
-Prism.NavigationEx provides ViewModel first navigation with Prism.Forms.
+Prism.NavigationEx provides ViewModel first navigation for Prism.Forms.
 
 ## Useage
+You can specify targert ViewModel and parameter type for navigation.
+```C#
+public class MainPageViewModel : NavigationViewModel
+{
+    public DelegateCommand GoToNextCommand { get; }
 
+    public MainPageViewModel(INavigationService navigationService) : base(navigationService)
+    {
+        GoToNextCommand = new DelegateCommand(() => NavigateAsync<NextPageViewModel, int>(100));
+    }
+}
+
+public class NextPageViewModel : NavigationViewModel<int>
+{
+    public DelegateCommand GoBackCommand { get; }
+
+    public NextPageViewModel(INavigationService navigationService) : base(navigationService)
+    {
+        GoBackCommand = new DelegateCommand(() => GoBackAsync());
+    }
+
+    public override void Prepare(int parameter)
+    {
+        //Initialize here
+    }
+}
+```
+
+If you want to return result, you can do as follows.
 ```C#
 public class MainPageViewModel : NavigationViewModel
 {
@@ -36,25 +64,89 @@ public class NextPageViewModel : NavigationViewModel<int, string>
     }
 }
 ```
+If you don't need initializing, you can use `NavigationViewModelResult`.
+
 ### Wrap in NavigationPage
-If wrapInNavigationPage parameter is true, thie next page is wrapped in NavigationPage.
+If `wrapInNavigationPage` parameter is true, thie next page is wrapped in NavigationPage.
 ```C#
-await NavigateAsync<NextPageViewModel>(wrapInNavigationPage: true);
+NavigateAsync<NextPageViewModel>(wrapInNavigationPage: true);
 ```
 
 ### Clear navigation stack
-If noHistory parameter is true, navigation stack is cleared.
+If `noHistory` parameter is true, navigation stack is cleared.
 ```C#
-await NavigateAsync<NextPageViewModel>(noHistory: true);
+NavigateAsync<NextPageViewModel>(noHistory: true);
 ```
 
 ### Confirm navigation
-You can provide a canNavigate parameter which determines whether or not navigation can be done.
+You can provide a `canNavigate` parameter which determines whether or not navigation can be done.
 ```C#
-await NavigateAsync<NextPageViewModel>(canNavigate: () => pageDialogService.DisplayAlertAsync("title", "message", "OK", "Cancel");
+NavigateAsync<NextPageViewModel>(canNavigate: () => pageDialogService.DisplayAlertAsync("title", "message", "OK", "Cancel");
+```
+
+### Replace current page
+If `replaced` parameter is true, current page is replaced.
+```C#
+NavigateAsync<NextPageViewModel>(replaced: true);
 ```
 
 ### Deep Link
+This library supports deep link.
 ```C#
+var navigation = NavigationFactory.Create<MainPageViewModel>()
+                                  .Add<NextPageViewModel, int>(100);
+                                  .Add<NextNextPageViewModel, int>(200);
 
+NavigateAsync(navigation, wrapInNavigationPage: true);
+```
+
+If you want to return result in the middle of link, you can do as follows. 
+```C#
+var navigation = NavigationFactory.Create<MainPageViewModel, string>((viewModel, result) => 
+                                  {
+                                      if (result.Success && viewModel is MainPageViewModel mainPageViewModel)
+                                      {
+                                          //...
+                                      }
+                                  })
+                                  .Add<NextPageViewModel, int, string>(100, (viewModel, result) => 
+                                  {
+                                      if (result.Success && viewModel is NextPageViewModel nextPageViewModel)
+                                      {
+                                          //...
+                                      }
+                                  })
+                                  .Add<NextNextPageViewModel, int>(200);
+
+NavigateAsync(navigation, wrapInNavigationPage: true);
+```
+
+### TabbedPage
+You can create tab by specifying ViewModel and parameter type. If `wrapInNavigationPage` is true, the tab is wrapped in NavigationPage.
+```C#
+var navigation = NavigationFactory.Create<MyTabbedPageViewModel>(null, new Tab<FirstTabPageViewModel, string>("text", true), new Tab<SecondTabPageViewModel>());
+
+NavigateAsync(navigation, noHistory: true);
+```
+
+### Registering all pages
+This library provides the way of registering your all pages.
+```C#
+protected override void RegisterTypes(IContainerRegistry containerRegistry)
+{
+    containerRegistry.RegisterForNavigation(this);
+}
+```
+
+### NavigationNameProvider
+By default, a target page name for a ViewModel is the ViewModel name which "ViewModel"　is removed from. If you want to use other pages, you can customize it.
+```C#
+NavigationNameProvider.SetDefaultViewModelTypeToNavigationNameResolver(viewModelType =>
+{
+    //...
+});
+```
+If you want to use other NavigationPage, you can change it.
+```C#
+NavigationNameProvider.DefaultNavigationPageName = nameof(MyNavigationPage);
 ```
