@@ -7,8 +7,9 @@
     <Owners>f-miyu</Owners>
     <PackageProjectUrl>https://github.com/f-miyu/Prism.NavigationEx</PackageProjectUrl>
     <PackageTags>xamarin, uwp, ios, android, xamarin.forms, prism, prism.forms, navigation</PackageTags>
-    <Description>Navigation extensions for Prism.Forms</Description>
+    <Description>Prism.NavigationEx provides ViewModel first navigation for Prism.Forms.</Description>
     <PackageId>Prism.NavigationEx</PackageId>
+    <Title>Navigation extensions for Prism.Forms</Title>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType></DebugType>
