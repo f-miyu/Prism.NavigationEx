@@ -1,5 +1,5 @@
 # Prism.NavigationEx
-Prism.NavigationEx provides ViewModel first navigation for Prism.Forms.
+Prism.NavigationEx provides ViewModel first navigation for [Prism.Forms](https://github.com/PrismLibrary/Prism).
 
 ## Useage
 You can specify targert ViewModel and parameter type for navigation.
