@@ -3,10 +3,6 @@ using System.Threading.Tasks;
 using Prism.Mvvm;
 using Prism.Navigation;
 using System.Threading;
-using Xamarin.Forms;
-using Prism.Events;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Prism.NavigationEx
 {
@@ -79,6 +75,61 @@ namespace Prism.NavigationEx
 
             return result;
         }
+
+        protected virtual Task NavigateAsync(INavigation navigation, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false)
+        {
+            return NavigationService.NavigateAsync(navigation, useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced);
+        }
+
+        protected virtual Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TResult>(INavigation<TViewModel> navigation, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
+            where TViewModel : INavigationViewModelResult<TResult>
+        {
+            return NavigationService.NavigateAsync<TViewModel, TResult>(navigation, useModalNavigation, animated, wrapInNavigationPage, noHistory);
+        }
+
+        protected virtual Task NavigateAsync<TViewModel>(bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false, Func<Task<bool>> canNavigate = null)
+            where TViewModel : INavigationViewModel
+        {
+            return NavigationService.NavigateAsync(NavigationFactory.Create<TViewModel>(canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced);
+        }
+
+        protected virtual Task NavigateAsync<TViewModel, TParameter>(TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false, Func<Task<bool>> canNavigate = null)
+            where TViewModel : INavigationViewModel<TParameter>
+        {
+            return NavigationService.NavigateAsync(NavigationFactory.Create<TViewModel, TParameter>(parameter, canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced);
+        }
+
+        protected virtual Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TResult>(bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, Func<Task<bool>> canNavigate = null)
+            where TViewModel : INavigationViewModelResult<TResult>
+        {
+            return NavigationService.NavigateAsync<TViewModel, TResult>(NavigationFactory.Create<TViewModel>(canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory);
+        }
+
+        protected virtual Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TParameter, TResult>(TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, Func<Task<bool>> canNavigate = null)
+            where TViewModel : INavigationViewModel<TParameter, TResult>
+        {
+            return NavigationService.NavigateAsync<TViewModel, TResult>(NavigationFactory.Create<TViewModel, TParameter>(parameter, canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory);
+        }
+
+        protected virtual Task<bool> GoBackAsync(bool? useModalNavigation = null, bool animated = true, Func<Task<bool>> canNavigate = null)
+        {
+            var parameters = new NavigationParameters
+            {
+                {NavigationParameterKey.CanNavigate, canNavigate}
+            };
+
+            return NavigationService.GoBackAsync(parameters: parameters, useModalNavigation: useModalNavigation, animated: animated);
+        }
+
+        protected virtual Task GoBackToRootAsync(Func<Task<bool>> canNavigate = null)
+        {
+            var parameters = new NavigationParameters
+            {
+                {NavigationParameterKey.CanNavigate, canNavigate}
+            };
+
+            return NavigationService.GoBackToRootAsync(parameters);
+        }
     }
 
     public abstract class NavigationViewModel<TParameter> : NavigationViewModel, INavigationViewModel<TParameter>
@@ -141,6 +192,17 @@ namespace Prism.NavigationEx
             base.Destroy();
 
             _tcs?.TrySetCanceled();
+        }
+
+        protected virtual Task<bool> GoBackAsync(TResult result, bool? useModalNavigation = null, bool animated = true, Func<Task<bool>> canNavigate = null)
+        {
+            var parameters = new NavigationParameters
+            {
+                {NavigationParameterKey.Result, result},
+                {NavigationParameterKey.CanNavigate, canNavigate}
+            };
+
+            return NavigationService.GoBackAsync(parameters: parameters, useModalNavigation: useModalNavigation, animated: animated);
         }
     }
 

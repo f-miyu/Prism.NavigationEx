@@ -20,7 +20,7 @@ namespace Prism.NavigationEx.Sample.ViewModels
         {
             GoToSecondPageCommand.Subscribe(async () =>
             {
-                var result = await NavigationService.NavigateAsync<SecondPageViewModel, string>();
+                var result = await NavigateAsync<SecondPageViewModel, string>();
                 if (result.Success)
                 {
                     Text.Value = result.Data;
@@ -37,7 +37,7 @@ namespace Prism.NavigationEx.Sample.ViewModels
                     }
                 }).Add<ThirdPageViewModel>(() => pageDialogService.DisplayAlertAsync("Are you sure?", null, "Yes", "No"));
 
-                var result = await NavigationService.NavigateAsync<SecondPageViewModel, string>(navigation);
+                var result = await NavigateAsync<SecondPageViewModel, string>(navigation);
                 if (result.Success)
                 {
                     Text.Value = result.Data;
@@ -47,8 +47,7 @@ namespace Prism.NavigationEx.Sample.ViewModels
             GoToTabbedPageCommand.Subscribe(async () =>
             {
                 var navigation = NavigationFactory.Create(nameof(TabbedPage), new Tab<FirstTabPageViewModel, string>(Text.Value, true), new Tab<SecondTabPageViewModel>(true));
-
-                await NavigationService.NavigateAsync(navigation, noHistory: true);
+                await NavigateAsync(navigation, noHistory: true);
             });
         }
     }

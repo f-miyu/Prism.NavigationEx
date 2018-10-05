@@ -13,7 +13,7 @@ namespace Prism.NavigationEx.Sample.ViewModels
         {
             GoToSecondPageCommand.Subscribe(async () =>
             {
-                var result = await NavigationService.NavigateAsync<SecondPageViewModel, string>();
+                var result = await NavigateAsync<SecondPageViewModel, string>();
                 if (result.Success)
                 {
                     Text.Value = result.Data;

@@ -20,9 +20,9 @@ namespace Prism.NavigationEx.Sample.ViewModels
         {
             _pageDialogService = pageDialogService;
 
-            OkCommand.Subscribe(async () => await NavigationService.GoBackAsync(this, Text.Value, canNavigate: () => pageDialogService.DisplayAlertAsync("Are you sure?", Text.Value, "Yes", "No")));
-            CancelCommand.Subscribe(async () => await NavigationService.GoBackAsync());
-            GoBackToMainPageCommand.Subscribe(async () => await NavigationService.GoBackToRootAsync());
+            OkCommand.Subscribe(async () => await GoBackAsync(Text.Value, canNavigate: () => pageDialogService.DisplayAlertAsync("Are you sure?", Text.Value, "Yes", "No")));
+            CancelCommand.Subscribe(async () => await GoBackAsync());
+            GoBackToMainPageCommand.Subscribe(async () => await GoBackToRootAsync());
         }
 
         public override void Prepare(string parameter)

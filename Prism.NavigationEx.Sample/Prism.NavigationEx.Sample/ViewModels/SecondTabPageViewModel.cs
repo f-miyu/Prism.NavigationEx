@@ -14,7 +14,7 @@ namespace Prism.NavigationEx.Sample.ViewModels
         {
             GoToMainPageCommand.Subscribe(async () =>
             {
-                await NavigationService.NavigateAsync<MainPageViewModel>(wrapInNavigationPage: true, noHistory: true);
+                await NavigateAsync<MainPageViewModel>(wrapInNavigationPage: true, noHistory: true);
             });
         }
     }

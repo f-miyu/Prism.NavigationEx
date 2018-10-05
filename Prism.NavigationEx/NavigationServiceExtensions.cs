@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Prism.Navigation;
 using System.Linq;
 using System.Collections.Generic;
+using Prism.Common;
+using Prism.Mvvm;
 
 namespace Prism.NavigationEx
 {
@@ -83,59 +85,16 @@ namespace Prism.NavigationEx
             }
         }
 
-        public static Task NavigateAsync<TViewModel>(this INavigationService navigationService, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false, Func<Task<bool>> canNavigate = null)
+        public static Task NavigateAsync<TViewModel>(this INavigationService navigationService, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false)
             where TViewModel : INavigationViewModel
         {
-            return navigationService.NavigateAsync(NavigationFactory.Create<TViewModel>(canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced);
+            return navigationService.NavigateAsync(NavigationFactory.Create<TViewModel>(), useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced);
         }
 
-        public static Task NavigateAsync<TViewModel, TParameter>(this INavigationService navigationService, TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false, Func<Task<bool>> canNavigate = null)
+        public static Task NavigateAsync<TViewModel, TParameter>(this INavigationService navigationService, TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false)
             where TViewModel : INavigationViewModel<TParameter>
         {
-            return navigationService.NavigateAsync(NavigationFactory.Create<TViewModel, TParameter>(parameter, canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced);
-        }
-
-        public static Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TResult>(this INavigationService navigationService, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, Func<Task<bool>> canNavigate = null)
-            where TViewModel : INavigationViewModelResult<TResult>
-        {
-            return navigationService.NavigateAsync<TViewModel, TResult>(NavigationFactory.Create<TViewModel>(canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory);
-        }
-
-        public static Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TParameter, TResult>(this INavigationService navigationService, TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, Func<Task<bool>> canNavigate = null)
-            where TViewModel : INavigationViewModel<TParameter, TResult>
-        {
-            return navigationService.NavigateAsync<TViewModel, TResult>(NavigationFactory.Create<TViewModel, TParameter>(parameter, canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory);
-        }
-
-        public static Task<bool> GoBackAsync(this INavigationService navigationService, bool? useModalNavigation = null, bool animated = true, Func<Task<bool>> canNavigate = null)
-        {
-            var parameters = new NavigationParameters
-            {
-                {NavigationParameterKey.CanNavigate, canNavigate}
-            };
-
-            return navigationService.GoBackAsync(parameters: parameters, useModalNavigation: useModalNavigation, animated: animated);
-        }
-
-        public static Task<bool> GoBackAsync<TResult>(this INavigationService navigationService, INavigationViewModelResult<TResult> viewModel, TResult result, bool? useModalNavigation = null, bool animated = true, Func<Task<bool>> canNavigate = null)
-        {
-            var parameters = new NavigationParameters
-            {
-                {NavigationParameterKey.Result, result},
-                {NavigationParameterKey.CanNavigate, canNavigate}
-            };
-
-            return navigationService.GoBackAsync(parameters: parameters, useModalNavigation: useModalNavigation, animated: animated);
-        }
-
-        public static Task GoBackToRootAsync(this INavigationService navigationService, Func<Task<bool>> canNavigate = null)
-        {
-            var parameters = new NavigationParameters
-            {
-                {NavigationParameterKey.CanNavigate, canNavigate}
-            };
-
-            return navigationService.GoBackToRootAsync(parameters);
+            return navigationService.NavigateAsync(NavigationFactory.Create<TViewModel, TParameter>(parameter), useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced);
         }
     }
 }
