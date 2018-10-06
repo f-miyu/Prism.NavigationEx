@@ -1,6 +1,11 @@
 # Prism.NavigationEx
 Prism.NavigationEx provides ViewModel first navigation for [Prism.Forms](https://github.com/PrismLibrary/Prism).
 
+## Setup
+Install NuGet package.
+
+[Prism.NavigationEx](https://www.nuget.org/packages/Prism.NavigationEx/) [![NuGet](https://img.shields.io/nuget/v/Prism.NavigationEx.svg?label=NuGet)](https://www.nuget.org/packages/Prism.NavigationEx/)
+
 ## Usage
 You can specify targert ViewModel and parameter type for navigation.
 ```C#
