@@ -6,7 +6,7 @@
     <PackageLicenseUrl>https://github.com/f-miyu/Prism.NavigationEx/blob/master/LICENSE</PackageLicenseUrl>
     <Owners>f-miyu</Owners>
     <PackageProjectUrl>https://github.com/f-miyu/Prism.NavigationEx</PackageProjectUrl>
-    <PackageTags>xamarin, uwp, ios, android, xamarin.forms, prism, prism.forms, navigation</PackageTags>
+    <PackageTags>xamarin, uwp, ios, android, xamarin.forms, prism, prism.forms, mvvm</PackageTags>
     <Description>Prism.NavigationEx provides ViewModel first navigation for Prism.Forms.</Description>
     <PackageId>Prism.NavigationEx</PackageId>
     <Title>Navigation extensions for Prism.Forms</Title>

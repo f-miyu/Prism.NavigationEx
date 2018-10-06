@@ -36,7 +36,7 @@ namespace Prism.NavigationEx
             return navigationService.NavigateAsync(path, parameters, useModalNavigation, animated);
         }
 
-        public static async Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TResult>(this INavigationService navigationService, INavigation<TViewModel> navigation, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false)
+        public static async Task<INavigationResult<TResult>> NavigateAsync<TViewModel, TResult>(this INavigationService navigationService, INavigation<TViewModel> navigation, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, CancellationToken? cancellationToken = null)
             where TViewModel : INavigationViewModelResult<TResult>
         {
             if (navigation == null)
@@ -45,42 +45,43 @@ namespace Prism.NavigationEx
             var tcs = new TaskCompletionSource<TResult>();
             var cts = new CancellationTokenSource();
 
-            var cancellationToken = cts.Token;
-
-            using (cancellationToken.Register(() => tcs.TrySetCanceled()))
+            using (cts.Token.Register(() => tcs.TrySetCanceled()))
             {
-                try
+                using (cancellationToken?.Register(() => tcs.TrySetCanceled()))
                 {
-                    var taskCompletionSourceId = Guid.NewGuid().ToString();
-                    var additionalQueries = new NavigationParameters
+                    try
                     {
-                        {NavigationParameterKey.TaskCompletionSourceId, taskCompletionSourceId}
-                    };
+                        var taskCompletionSourceId = Guid.NewGuid().ToString();
+                        var additionalQueries = new NavigationParameters
+                        {
+                            {NavigationParameterKey.TaskCompletionSourceId, taskCompletionSourceId}
+                        };
 
-                    var additionalParameters = new NavigationParameters();
-                    additionalParameters.Add(taskCompletionSourceId, tcs);
-                    additionalParameters.Add(NavigationParameterKey.CancellationTokenSource, cts);
+                        var additionalParameters = new NavigationParameters();
+                        additionalParameters.Add(taskCompletionSourceId, tcs);
+                        additionalParameters.Add(NavigationParameterKey.CancellationTokenSource, cts);
 
-                    var (path, parameters) = navigation.GetPathAndParameters(additionalParameters, additionalQueries);
+                        var (path, parameters) = navigation.GetPathAndParameters(additionalParameters, additionalQueries);
 
-                    if (wrapInNavigationPage)
-                    {
-                        path = NavigationNameProvider.DefaultNavigationPageName + "/" + path;
+                        if (wrapInNavigationPage)
+                        {
+                            path = NavigationNameProvider.DefaultNavigationPageName + "/" + path;
+                        }
+
+                        if (noHistory)
+                        {
+                            path = "/" + path;
+                        }
+
+                        await navigationService.NavigateAsync(path, parameters, useModalNavigation, animated).ConfigureAwait(false);
+
+                        var result = await tcs.Task.ConfigureAwait(false);
+                        return new NavigationResult<TResult>(true, result);
                     }
-
-                    if (noHistory)
+                    catch (Exception e)
                     {
-                        path = "/" + path;
+                        return new NavigationResult<TResult>(false, default(TResult), e);
                     }
-
-                    await navigationService.NavigateAsync(path, parameters, useModalNavigation, animated).ConfigureAwait(false);
-
-                    var result = await tcs.Task.ConfigureAwait(false);
-                    return new NavigationResult<TResult>(true, result);
-                }
-                catch (Exception e)
-                {
-                    return new NavigationResult<TResult>(false, default(TResult), e);
                 }
             }
         }
