@@ -27,7 +27,7 @@ namespace Prism.NavigationEx
             }
         }
 
-        public virtual string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
+        public virtual string GetPath(INavigationParameters parameters, INavigationParameters queries = null, INavigationParameters nextQueries = null)
         {
             if (parameters == null)
             {
@@ -86,7 +86,7 @@ namespace Prism.NavigationEx
         public ResultReceivedDelegate<TResult> ResultReceived { get; set; }
         protected TaskCompletionSource<TResult> _tcs;
 
-        public override string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null)
+        public override string GetPath(INavigationParameters parameters, INavigationParameters queries = null, INavigationParameters nextQueries = null)
         {
             if (parameters == null)
             {

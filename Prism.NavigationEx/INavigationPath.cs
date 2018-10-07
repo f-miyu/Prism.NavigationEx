@@ -7,6 +7,6 @@ namespace Prism.NavigationEx
     public interface INavigationPath
     {
         INavigationPath NextNavigationPath { get; set; }
-        string GetPath(NavigationParameters parameters, NavigationParameters queries = null, NavigationParameters nextQueries = null);
+        string GetPath(INavigationParameters parameters, INavigationParameters queries = null, INavigationParameters nextQueries = null);
     }
 }

@@ -14,7 +14,7 @@ namespace Prism.NavigationEx
             _wrapInNavigationPage = wrapInNavigationPage;
         }
 
-        public virtual string GetPath(ref NavigationParameters parameters)
+        public virtual string GetPath(ref INavigationParameters parameters)
         {
             return $"{(_wrapInNavigationPage ? NavigationNameProvider.DefaultNavigationPageName + "|" : "")}{_name}";
         }
@@ -29,7 +29,7 @@ namespace Prism.NavigationEx
             _wrapInNavigationPage = wrapInNavigationPage;
         }
 
-        public virtual string GetPath(ref NavigationParameters parameters)
+        public virtual string GetPath(ref INavigationParameters parameters)
         {
             var name = NavigationNameProvider.GetNavigationName(typeof(TViewModel));
             return $"{(_wrapInNavigationPage ? NavigationNameProvider.DefaultNavigationPageName + "|" : "")}{name}";
@@ -45,7 +45,7 @@ namespace Prism.NavigationEx
             _parameter = parameter;
         }
 
-        public override string GetPath(ref NavigationParameters parameters)
+        public override string GetPath(ref INavigationParameters parameters)
         {
             if (parameters == null)
             {

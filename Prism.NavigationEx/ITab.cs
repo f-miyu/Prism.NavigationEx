@@ -5,6 +5,6 @@ namespace Prism.NavigationEx
 {
     public interface ITab
     {
-        string GetPath(ref NavigationParameters parameters);
+        string GetPath(ref INavigationParameters parameters);
     }
 }

@@ -34,7 +34,7 @@ namespace Prism.NavigationEx
             return _navigation.Add<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate, tabs);
         }
 
-        public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalQueries = null)
+        public (string Path, INavigationParameters Parameters) GetPathAndParameters(INavigationParameters additionalParameters = null, INavigationParameters additionalQueries = null)
         {
             return _navigation.GetPathAndParameters(additionalParameters, additionalQueries);
         }
@@ -69,7 +69,7 @@ namespace Prism.NavigationEx
             return _navigation.Add<TViewModel, TParameter, TResult>(parameter, resultReceived, canNavigate, tabs);
         }
 
-        public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalQueries = null)
+        public (string Path, INavigationParameters Parameters) GetPathAndParameters(INavigationParameters additionalParameters = null, INavigationParameters additionalQueries = null)
         {
             return _navigation.GetPathAndParameters(additionalParameters, additionalQueries);
         }

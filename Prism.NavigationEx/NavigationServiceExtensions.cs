@@ -11,7 +11,7 @@ namespace Prism.NavigationEx
 {
     public static class NavigationServiceExtensions
     {
-        public static Task NavigateAsync(this INavigationService navigationService, INavigation navigation, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false)
+        public static Task<INavigationResult> NavigateAsync(this INavigationService navigationService, INavigation navigation, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false)
         {
             if (navigation == null)
                 throw new ArgumentNullException(nameof(navigation));
@@ -73,7 +73,12 @@ namespace Prism.NavigationEx
                             path = "/" + path;
                         }
 
-                        await navigationService.NavigateAsync(path, parameters, useModalNavigation, animated).ConfigureAwait(false);
+                        var navigationResult = await navigationService.NavigateAsync(path, parameters, useModalNavigation, animated).ConfigureAwait(false);
+
+                        if (!navigationResult.Success)
+                        {
+                            return new NavigationResult<TResult>(false, default(TResult), navigationResult.Exception);
+                        }
 
                         var result = await tcs.Task.ConfigureAwait(false);
                         return new NavigationResult<TResult>(true, result);

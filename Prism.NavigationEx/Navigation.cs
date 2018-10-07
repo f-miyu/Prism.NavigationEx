@@ -44,7 +44,7 @@ namespace Prism.NavigationEx
             return new ResultNavigation<TResult>(this);
         }
 
-        public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalQueries = null)
+        public (string Path, INavigationParameters Parameters) GetPathAndParameters(INavigationParameters additionalParameters = null, INavigationParameters additionalQueries = null)
         {
             return _navigationImpl.GetPathAndParameters(additionalParameters, additionalQueries);
         }
@@ -89,7 +89,7 @@ namespace Prism.NavigationEx
             return new ResultNavigation<TRootViewModel, TResult>(this);
         }
 
-        public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalQueries = null)
+        public (string Path, INavigationParameters Parameters) GetPathAndParameters(INavigationParameters additionalParameters = null, INavigationParameters additionalQueries = null)
         {
             return _navigationImpl.GetPathAndParameters(additionalParameters, additionalQueries);
         }
@@ -169,7 +169,7 @@ namespace Prism.NavigationEx
             _lastNavigationPath = navigationPath;
         }
 
-        public (string Path, NavigationParameters Parameters) GetPathAndParameters(NavigationParameters additionalParameters = null, NavigationParameters additionalQueries = null)
+        public (string Path, INavigationParameters Parameters) GetPathAndParameters(INavigationParameters additionalParameters = null, INavigationParameters additionalQueries = null)
         {
             var parameters = new NavigationParameters();
             if (additionalParameters != null)

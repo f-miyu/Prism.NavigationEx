@@ -9,7 +9,7 @@ namespace Prism.NavigationEx
 {
     public static class NavigationParametersExtensions
     {
-        public static bool CreateTabExists(this NavigationParameters self, string name)
+        public static bool CreateTabExists(this INavigationParameters self, string name)
         {
             var createTabs = self.GetValues<string>(KnownNavigationParameters.CreateTab);
             return createTabs.Select(s =>
@@ -23,7 +23,7 @@ namespace Prism.NavigationEx
             }).Any(s => s == name);
         }
 
-        public static IEnumerable<string> GetCreateTabParameters(this NavigationParameters self, string name, string parameterKey)
+        public static IEnumerable<string> GetCreateTabParameters(this INavigationParameters self, string name, string parameterKey)
         {
             var createTabs = self.GetValues<string>(KnownNavigationParameters.CreateTab);
             return createTabs
