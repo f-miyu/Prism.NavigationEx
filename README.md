@@ -21,6 +21,8 @@ public class MainPageViewModel : NavigationViewModel
 
 public class NextPageViewModel : NavigationViewModel<int>
 {
+    private int _parameter;
+    
     public DelegateCommand GoBackCommand { get; }
 
     public NextPageViewModel(INavigationService navigationService) : base(navigationService)
@@ -30,7 +32,7 @@ public class NextPageViewModel : NavigationViewModel<int>
 
     public override void Prepare(int parameter)
     {
-        //Initialize here
+        _parameter = parameter;
     }
 }
 ```
@@ -57,6 +59,8 @@ public class MainPageViewModel : NavigationViewModel
 
 public class NextPageViewModel : NavigationViewModel<int, string>
 {
+    private int _parameter;
+    
     public DelegateCommand GoBackCommand { get; }
 
     public NextPageViewModel(INavigationService navigationService) : base(navigationService)
@@ -66,7 +70,7 @@ public class NextPageViewModel : NavigationViewModel<int, string>
 
     public override void Prepare(int parameter)
     {
-        //Initialize here
+        _parameter = parameter;
     }
 }
 ```
