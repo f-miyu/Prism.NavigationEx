@@ -48,6 +48,7 @@ public class MainPageViewModel : NavigationViewModel
             var result = await NavigateAsync<NextPageViewModel, int, string>(100);
             if (result.Success)
             {
+                var data = result.Data;
                 //...
             }
         });
@@ -111,6 +112,7 @@ var navigation = NavigationFactory.Create<MainPageViewModel, string>((viewModel,
                                   {
                                       if (result.Success && viewModel is MainPageViewModel mainPageViewModel)
                                       {
+                                          var data = result.Data;
                                           //...
                                       }
                                   })
@@ -118,6 +120,7 @@ var navigation = NavigationFactory.Create<MainPageViewModel, string>((viewModel,
                                   {
                                       if (result.Success && viewModel is NextPageViewModel nextPageViewModel)
                                       {
+                                          var data = result.Data;
                                           //...
                                       }
                                   })
