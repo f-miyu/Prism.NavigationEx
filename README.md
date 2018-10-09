@@ -77,25 +77,25 @@ public class NextPageViewModel : NavigationViewModel<int, string>
 If you don't need initializing, you can use `NavigationViewModelResult`.
 
 ### Wrap in NavigationPage
-If `wrapInNavigationPage` parameter is true, thie next page is wrapped in NavigationPage.
+If `wrapInNavigationPage` argument is true, thie next page is wrapped in NavigationPage.
 ```C#
 NavigateAsync<NextPageViewModel>(wrapInNavigationPage: true);
 ```
 
 ### Clear navigation stack
-If `noHistory` parameter is true, navigation stack is cleared.
+If `noHistory` argument is true, navigation stack is cleared.
 ```C#
 NavigateAsync<NextPageViewModel>(noHistory: true);
 ```
 
 ### Confirm navigation
-You can provide a `canNavigate` parameter which determines whether or not navigation can be done.
+You can provide a `canNavigate` argument which determines whether or not navigation can be done.
 ```C#
 NavigateAsync<NextPageViewModel>(canNavigate: () => pageDialogService.DisplayAlertAsync("title", "message", "OK", "Cancel");
 ```
 
 ### Replace current page
-If `replaced` parameter is true, current page is replaced.
+If `replaced` argument is true, current page is replaced.
 ```C#
 NavigateAsync<NextPageViewModel>(replaced: true);
 ```
@@ -142,7 +142,7 @@ NavigateAsync(navigation, noHistory: true);
 ```
 
 ### Registering all pages
-This library provides the way of registering your all pages.
+This library provides the way of registering your all pages and NavigationPage.
 ```C#
 protected override void RegisterTypes(IContainerRegistry containerRegistry)
 {
