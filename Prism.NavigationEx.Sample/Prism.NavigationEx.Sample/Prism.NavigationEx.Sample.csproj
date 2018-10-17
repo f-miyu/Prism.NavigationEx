@@ -3,9 +3,9 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="3.2.0.839982" />
+    <PackageReference Include="Xamarin.Forms" Version="3.2.0.871581" />
     <PackageReference Include="ReactiveProperty" Version="5.2.0" />
-    <PackageReference Include="Prism.DryIoc.Forms" Version="7.1.0.279-pre" />
+    <PackageReference Include="Prism.DryIoc.Forms" Version="7.1.0.431" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="ViewModels\ConfirmnNavigationViewModelResult.cs" />
