@@ -51,7 +51,7 @@ public class MainPageViewModel : NavigationViewModel
             if (result.Success)
             {
                 var data = result.Data;
-                //...
+                ...
             }
         });
     }
@@ -117,7 +117,7 @@ var navigation = NavigationFactory.Create<MainPageViewModel, string>((viewModel,
                                       if (result.Success && viewModel is MainPageViewModel mainPageViewModel)
                                       {
                                           var data = result.Data;
-                                          //...
+                                          ...
                                       }
                                   })
                                   .Add<NextPageViewModel, int, string>(100, (viewModel, result) => 
@@ -125,7 +125,7 @@ var navigation = NavigationFactory.Create<MainPageViewModel, string>((viewModel,
                                       if (result.Success && viewModel is NextPageViewModel nextPageViewModel)
                                       {
                                           var data = result.Data;
-                                          //...
+                                          ...
                                       }
                                   })
                                   .Add<NextNextPageViewModel, int>(200);
@@ -141,8 +141,15 @@ var navigation = NavigationFactory.Create<MyTabbedPageViewModel>(null, new Tab<F
 NavigateAsync(navigation, noHistory: true);
 ```
 
+You can use `NavigateTabbedPageAsync` if you want to navigate to default `TabbedPage`.
+```C#
+NavigateTabbedPageAsync(null, true, false, true, false, 
+                        new Tab<FirstTabPageViewModel, string>("text", true), 
+                        new Tab<SecondTabPageViewModel>());
+```
+
 ### Registering all pages
-This library provides the way of registering your all pages and NavigationPage.
+This library provides the way of registering your all pages, NavigationPage and TabbedPage.
 ```C#
 protected override void RegisterTypes(IContainerRegistry containerRegistry)
 {
@@ -155,10 +162,15 @@ By default, a target page name for a ViewModel is the ViewModel name which "View
 ```C#
 NavigationNameProvider.SetDefaultViewModelTypeToNavigationNameResolver(viewModelType =>
 {
-    //...
+    ...
 });
 ```
 If you want to use other NavigationPage, you can change it.
 ```C#
 NavigationNameProvider.DefaultNavigationPageName = nameof(MyNavigationPage);
+```
+
+If you want to use other TabbedPage for `NavigateTabbedPageAsync`, you can change it.
+```C#
+NavigationNameProvider.DefaultTabbedPageName = nameof(MyTabbedPage);
 ```
