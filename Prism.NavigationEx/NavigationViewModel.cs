@@ -111,6 +111,11 @@ namespace Prism.NavigationEx
             return NavigationService.NavigateAsync<TViewModel, TResult>(NavigationFactory.Create<TViewModel, TParameter>(parameter, canNavigate), useModalNavigation, animated, wrapInNavigationPage, noHistory, cancellationToken);
         }
 
+        protected virtual Task<INavigationResult> NavigateTabbedPageAsync(bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false, params ITab[] tabs)
+        {
+            return NavigationService.NavigateTabbedPageAsync(useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced, tabs);
+        }
+
         protected virtual Task<INavigationResult> GoBackAsync(bool? useModalNavigation = null, bool animated = true, Func<Task<bool>> canNavigate = null)
         {
             var parameters = new NavigationParameters

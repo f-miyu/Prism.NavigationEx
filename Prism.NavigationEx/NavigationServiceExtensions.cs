@@ -91,16 +91,21 @@ namespace Prism.NavigationEx
             }
         }
 
-        public static Task NavigateAsync<TViewModel>(this INavigationService navigationService, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false)
+        public static Task<INavigationResult> NavigateAsync<TViewModel>(this INavigationService navigationService, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false)
             where TViewModel : INavigationViewModel
         {
             return navigationService.NavigateAsync(NavigationFactory.Create<TViewModel>(), useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced);
         }
 
-        public static Task NavigateAsync<TViewModel, TParameter>(this INavigationService navigationService, TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false)
+        public static Task<INavigationResult> NavigateAsync<TViewModel, TParameter>(this INavigationService navigationService, TParameter parameter, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false)
             where TViewModel : INavigationViewModel<TParameter>
         {
             return navigationService.NavigateAsync(NavigationFactory.Create<TViewModel, TParameter>(parameter), useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced);
+        }
+
+        public static Task<INavigationResult> NavigateTabbedPageAsync(this INavigationService navigationService, bool? useModalNavigation = null, bool animated = true, bool wrapInNavigationPage = false, bool noHistory = false, bool replaced = false, params ITab[] tabs)
+        {
+            return navigationService.NavigateAsync(NavigationFactory.Create(NavigationNameProvider.DefaultTabbedPageName, tabs), useModalNavigation, animated, wrapInNavigationPage, noHistory, replaced);
         }
     }
 }

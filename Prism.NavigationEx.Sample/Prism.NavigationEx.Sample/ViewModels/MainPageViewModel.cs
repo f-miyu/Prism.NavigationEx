@@ -46,8 +46,9 @@ namespace Prism.NavigationEx.Sample.ViewModels
 
             GoToTabbedPageCommand.Subscribe(async () =>
             {
-                var navigation = NavigationFactory.Create(nameof(TabbedPage), new Tab<FirstTabPageViewModel, string>(Text.Value, true), new Tab<SecondTabPageViewModel>(true));
-                await NavigateAsync(navigation, noHistory: true);
+                await NavigateTabbedPageAsync(null, true, false, true, false,
+                                              new Tab<FirstTabPageViewModel, string>(Text.Value, true),
+                                              new Tab<SecondTabPageViewModel>(true));
             });
         }
     }

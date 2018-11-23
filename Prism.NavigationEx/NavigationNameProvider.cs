@@ -11,7 +11,7 @@ namespace Prism.NavigationEx
             {
                 var suffix = "ViewModel";
                 var name = viewModelType.Name;
-                if (name.EndsWith(suffix))
+                if (name.EndsWith(suffix, StringComparison.Ordinal))
                 {
                     name = name.Substring(0, name.Length - suffix.Length);
                 }
@@ -19,6 +19,8 @@ namespace Prism.NavigationEx
             };
 
         public static string DefaultNavigationPageName { get; set; } = nameof(NavigationPage);
+
+        public static string DefaultTabbedPageName { get; set; } = nameof(TabbedPage);
 
         public static string GetNavigationName(Type viewModelType)
         {
