@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard1.0</TargetFrameworks>
-    <PackageVersion>1.1.0</PackageVersion>
+    <PackageVersion>1.2.0</PackageVersion>
     <Authors>f-miyu</Authors>
     <PackageLicenseUrl>https://github.com/f-miyu/Prism.NavigationEx/blob/master/LICENSE</PackageLicenseUrl>
     <Owners>f-miyu</Owners>
